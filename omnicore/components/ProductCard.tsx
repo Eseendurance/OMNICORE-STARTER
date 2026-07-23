@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Product } from "@/lib/data";
 import { getVendor } from "@/lib/data";
 import { LiveProof, StockBar } from "@/components/LiveProof";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const naira = new Intl.NumberFormat("en-NG", {
   style: "currency",
@@ -53,6 +54,13 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
         <LiveProof viewers={product.liveViewers} soldToday={product.soldToday} />
         <StockBar stockLeft={product.stockLeft} />
+        {vendor && (
+          <WhatsAppButton
+            phone={vendor.whatsapp}
+            item={{ title: product.title, price: product.price, vendorName: vendor.name }}
+            className="mt-1 w-full"
+          />
+        )}
       </div>
     </div>
   );

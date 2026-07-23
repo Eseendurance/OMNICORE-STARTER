@@ -19,6 +19,8 @@ export type Vendor = {
   color: "marigold" | "jade" | "coral" | "sky";
   rating: number;
   followers: number;
+  /** Vendor WhatsApp number with country code, e.g. "+2348012345678" */
+  whatsapp: string;
 };
 
 export type Reel = {
@@ -40,6 +42,7 @@ export const vendors: Vendor[] = [
     color: "coral",
     rating: 4.8,
     followers: 12400,
+    whatsapp: "+2348031234001",
   },
   {
     slug: "lagos-fit",
@@ -49,6 +52,7 @@ export const vendors: Vendor[] = [
     color: "sky",
     rating: 4.6,
     followers: 8900,
+    whatsapp: "+2348031234002",
   },
   {
     slug: "market-fresh",
@@ -58,6 +62,7 @@ export const vendors: Vendor[] = [
     color: "jade",
     rating: 4.9,
     followers: 21000,
+    whatsapp: "+2348031234003",
   },
   {
     slug: "kaduna-textiles",
@@ -67,6 +72,7 @@ export const vendors: Vendor[] = [
     color: "marigold",
     rating: 4.7,
     followers: 5600,
+    whatsapp: "+2348031234004",
   },
 ];
 

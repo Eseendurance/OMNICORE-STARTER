@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Reel } from "@/lib/data";
-import { getVendor } from "@/lib/data";
+import { getVendor, products } from "@/lib/data";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function ReelCard({ reel }: { reel: Reel }) {
   const vendor = getVendor(reel.vendorSlug);
+  const product = products.find((p) => p.id === reel.productId);
 
   return (
     <div className="relative flex h-[calc(100vh-8rem)] min-h-[520px] w-full snap-start items-end overflow-hidden rounded-2xl border-2 border-ink bg-ink">
@@ -42,6 +44,13 @@ export default function ReelCard({ reel }: { reel: Reel }) {
           <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-paper bg-sky">↗</span>
           <span className="font-mono text-[11px] font-semibold">Share</span>
         </button>
+        {vendor && product && (
+          <WhatsAppButton
+            phone={vendor.whatsapp}
+            item={{ title: product.title, price: product.price, vendorName: vendor.name }}
+            variant="compact"
+          />
+        )}
       </div>
 
       <div className="relative z-10 max-w-[75%] p-5 text-paper">
