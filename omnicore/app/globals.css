@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/*
+  OmniCore token system — "Manifest Board"
+  Grounded in the brief's own world: motor-park departure boards and
+  waybill slips. Bright, market-stall energy. No dark backgrounds.
+*/
+:root {
+  --paper: #fffcf5;      /* warm bright base, never dark */
+  --ink: #14171f;        /* near-black navy, text only */
+  --marigold: #ffb100;   /* brand / primary CTA */
+  --jade: #00875a;       /* money, growth, confirmed */
+  --coral: #ff4b3e;      /* urgency, live, badges */
+  --sky: #2e9cff;        /* links, info, buyer actions */
+  --marigold-ink: #4a2e00;
+  --jade-tint: #e6f6ef;
+  --coral-tint: #ffe9e7;
+  --sky-tint: #e8f4ff;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-marigold: var(--marigold);
+  --color-jade: var(--jade);
+  --color-coral: var(--coral);
+  --color-sky: var(--sky);
+  --color-marigold-ink: var(--marigold-ink);
+  --color-jade-tint: var(--jade-tint);
+  --color-coral-tint: var(--coral-tint);
+  --color-sky-tint: var(--sky-tint);
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-manrope);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+/* Manifest board: flip-sign ticker used for live proof + logistics status */
+.manifest {
+  font-family: var(--font-mono), monospace;
+  letter-spacing: 0.04em;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}

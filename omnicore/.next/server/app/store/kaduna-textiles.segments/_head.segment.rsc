@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[43100,["/_next/static/chunks/04913383jfry2.js","/_next/static/chunks/2uwj8pl4hky_0.js"],"ViewportBoundary"]
+3:I[43100,["/_next/static/chunks/04913383jfry2.js","/_next/static/chunks/2uwj8pl4hky_0.js"],"MetadataBoundary"]
+4:"$Sreact.suspense"
+5:I[17165,["/_next/static/chunks/04913383jfry2.js","/_next/static/chunks/2uwj8pl4hky_0.js"],"IconMark"]
+0:{"rsc":["$","$1","h",{"children":[null,["$","$L2",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$L3",null,{"children":["$","$4",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"OmniCore AI — Sell online. Ship anywhere."}],["$","meta","1",{"name":"description","content":"OmniCore AI is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard."}],["$","link","2",{"rel":"icon","href":"/favicon.ico?favicon.2vob68tjqpejf.ico","sizes":"256x256","type":"image/x-icon"}],["$","$L5","3",{}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"K248p7yx4uI508-SPng9O"}
