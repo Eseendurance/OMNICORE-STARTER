@@ -1,1 +1,0 @@
-self.__SSG_MANIFEST=new Set(["\u002Fstore\u002F[vendor]"]);self.__SSG_MANIFEST_CB&&self.__SSG_MANIFEST_CB()
