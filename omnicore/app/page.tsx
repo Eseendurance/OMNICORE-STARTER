@@ -1,13 +1,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import ManifestBoard from "@/components/ManifestBoard";
-import { products, vendors } from "@/lib/data";
+import { getVendors, getFeaturedProducts } from "@/lib/catalog";
+
+export const dynamic = "force-dynamic";
 
 const manifestEntries = [
   { code: "RTE-01", label: "Aba → Lagos, courier dispatched", tone: "sky" as const },
   { code: "WVB-14", label: "Onitsha park waybill, 40kg cargo booked", tone: "marigold" as const },
-  { code: "LIVE", label: "22 people viewing Lagos Fit Studio right now", tone: "coral" as const },
-  { code: "PAID", label: "Order #8823 confirmed, ₦28,500", tone: "jade" as const },
+  { code: "LIVE", label: "22 people viewing a storefront right now", tone: "coral" as const },
+  { code: "PAID", label: "Order confirmed, ₦28,500", tone: "jade" as const },
 ];
 
 const steps = [
@@ -25,7 +27,9 @@ const steps = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [vendors, products] = await Promise.all([getVendors(), getFeaturedProducts(4)]);
+
   return (
     <div>
       <ManifestBoard entries={manifestEntries} />
@@ -52,16 +56,16 @@ export default function Home() {
             </p>
             <div id="get-started" className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/explore"
+                href="/signup"
                 className="rounded-md border-2 border-ink bg-marigold px-6 py-3 font-body font-bold text-ink shadow-[4px_4px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#14171F]"
               >
                 Start selling — it&apos;s free
               </Link>
               <Link
-                href="/store/adaeze-leather"
+                href="/explore"
                 className="rounded-md border-2 border-ink bg-white px-6 py-3 font-body font-bold text-ink transition hover:bg-ink hover:text-paper"
               >
-                Watch how it works
+                Browse the marketplace
               </Link>
             </div>
           </div>
@@ -81,24 +85,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trusted vendors strip */}
+      {/* Vendor strip — real, empty until real vendors sign up */}
       <section className="border-y-2 border-ink bg-white py-10">
         <div className="mx-auto max-w-6xl px-5">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/50">
-            Already shipping on OmniCore
+            {vendors.length > 0 ? "Already shipping on OmniCore" : "Be the first vendor on OmniCore"}
           </p>
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {vendors.map((v) => (
-              <Link
-                key={v.slug}
-                href={`/store/${v.slug}`}
-                className="rounded-lg border-2 border-ink px-3 py-4 text-center transition hover:-translate-y-0.5 hover:bg-marigold/20"
-              >
-                <p className="font-display text-sm font-bold">{v.name}</p>
-                <p className="mt-1 font-mono text-[11px] text-ink/50">{v.location}</p>
-              </Link>
-            ))}
-          </div>
+          {vendors.length === 0 ? (
+            <Link
+              href="/signup"
+              className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+            >
+              Claim your storefront
+            </Link>
+          ) : (
+            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {vendors.slice(0, 8).map((v) => (
+                <Link
+                  key={v.slug}
+                  href={`/store/${v.slug}`}
+                  className="rounded-lg border-2 border-ink px-3 py-4 text-center transition hover:-translate-y-0.5 hover:bg-marigold/20"
+                >
+                  <p className="font-display text-sm font-bold">{v.name}</p>
+                  <p className="mt-1 font-mono text-[11px] text-ink/50">{v.location ?? "Nigeria"}</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -119,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Live marketplace preview */}
+      {/* Live marketplace preview — real products, empty until vendors list */}
       <section className="bg-jade-tint py-16">
         <div className="mx-auto max-w-6xl px-5">
           <div className="flex flex-wrap items-end justify-between gap-3">
@@ -131,21 +144,27 @@ export default function Home() {
               Browse the full marketplace →
             </Link>
           </div>
-          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {products.slice(0, 4).map((p) => (
-              <Link
-                key={p.id}
-                href={`/store/${p.vendorSlug}`}
-                className="rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
-              >
-                <div className="relative aspect-square overflow-hidden rounded-lg">
-                  <Image src={p.image} alt={p.title} fill className="object-cover" />
-                </div>
-                <p className="mt-2 truncate font-display text-sm font-bold">{p.title}</p>
-                <p className="font-mono text-xs text-coral">{p.liveViewers} viewing now</p>
-              </Link>
-            ))}
-          </div>
+          {products.length === 0 ? (
+            <p className="mt-8 rounded-lg border-2 border-dashed border-ink/30 bg-white p-8 text-center text-sm text-ink/50">
+              No products listed yet — once vendors add inventory, it shows up here automatically.
+            </p>
+          ) : (
+            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {products.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/store/${p.vendor.slug}`}
+                  className="rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+                >
+                  <div className="relative aspect-square overflow-hidden rounded-lg">
+                    <Image src={p.image_url} alt={p.title} fill className="object-cover" />
+                  </div>
+                  <p className="mt-2 truncate font-display text-sm font-bold">{p.title}</p>
+                  <p className="font-mono text-xs text-coral">{p.live_viewers} viewing now</p>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -166,7 +185,7 @@ export default function Home() {
               <p className="mt-2 font-display text-3xl font-bold">{p.price}</p>
               <p className="mt-3 text-sm text-ink/70">{p.d}</p>
               <Link
-                href="/explore"
+                href="/signup"
                 className="mt-5 block rounded-md border-2 border-ink bg-ink px-4 py-2 text-center font-body font-bold text-paper transition hover:bg-ink/80"
               >
                 Choose {p.name}

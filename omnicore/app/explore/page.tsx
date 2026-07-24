@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import SearchBar from "@/components/SearchBar";
 import ProductCard from "@/components/ProductCard";
-import type { Product } from "@/lib/data";
+import type { CatalogProduct } from "@/lib/catalog";
 
 export default function ExplorePage() {
-  const [results, setResults] = useState<Product[]>([]);
+  const [results, setResults] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searched, setSearched] = useState(false);
 
   async function runSearch(query: string) {
     setLoading(true);
+    setSearched(query.trim().length > 0);
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
     const data = await res.json();
     setResults(data.results);
@@ -55,9 +58,21 @@ export default function ExplorePage() {
         {loading ? (
           <p className="font-mono text-sm text-ink/50">Loading…</p>
         ) : results.length === 0 ? (
-          <p className="font-mono text-sm text-ink/50">
-            No products match that search. Try a different term.
-          </p>
+          <div className="rounded-lg border-2 border-dashed border-ink/30 p-10 text-center">
+            <p className="font-mono text-sm text-ink/50">
+              {searched
+                ? "No products match that search. Try a different term."
+                : "No vendors have listed products yet — be the first."}
+            </p>
+            {!searched && (
+              <Link
+                href="/signup"
+                className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+              >
+                Start selling
+              </Link>
+            )}
+          </div>
         ) : (
           <>
             <p className="mb-4 font-mono text-xs uppercase tracking-widest text-ink/50">
