@@ -23,7 +23,7 @@ export default function DispatchForm({ orderId }: { orderId: string }) {
       <input
         name="transportCompany"
         required
-        placeholder="Transport company (e.g. Peace Mass Transit)"
+        placeholder="Transport company name"
         className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-marigold/40"
       />
       <input

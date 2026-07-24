@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getReels } from "@/lib/catalog";
+import { getCurrentVendor } from "@/lib/vendor";
 import ReelCard from "@/components/ReelCard";
 
 export const dynamic = "force-dynamic";
@@ -9,15 +10,19 @@ export const metadata = {
 };
 
 export default async function ReelsPage() {
-  const reels = await getReels();
+  const [reels, vendor] = await Promise.all([getReels(), getCurrentVendor()]);
+  const goLiveHref = vendor ? "/dashboard/live" : "/signup";
 
   return (
     <div className="mx-auto max-w-md px-4 py-8">
       <div className="mb-5 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold">Reels & Live</h1>
-        <button className="rounded-md border-2 border-ink bg-coral px-3 py-1.5 font-mono text-xs font-bold text-paper shadow-[3px_3px_0_0_#14171F]">
+        <Link
+          href={goLiveHref}
+          className="rounded-md border-2 border-ink bg-coral px-3 py-1.5 font-mono text-xs font-bold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+        >
           + Go live
-        </button>
+        </Link>
       </div>
       <p className="mb-6 text-sm text-ink/60">
         Short vendor videos and live drops, swipe up for the next one.

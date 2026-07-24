@@ -12,7 +12,7 @@
 // {
 //   "customerPhone": "+2348012345678",
 //   "customerName": "Ada",
-//   "transportCompany": "Peace Mass Transit",
+//   "transportCompany": "Example Motor Park Transport Co",
 //   "departureTerminal": "Jibowu Motor Park, Lagos",
 //   "driverName": "Musa",
 //   "driverPhone": "+2348099999999",

@@ -9,6 +9,8 @@ import {
   ClipboardList,
   Store,
   LogOut,
+  Clapperboard,
+  Radio,
 } from "lucide-react";
 import { signOut } from "@/app/auth-actions";
 
@@ -23,6 +25,8 @@ const links = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/products", label: "Products", icon: Package },
   { href: "/dashboard/orders", label: "Orders", icon: ClipboardList },
+  { href: "/dashboard/reels", label: "Reels", icon: Clapperboard },
+  { href: "/dashboard/live", label: "Go live", icon: Radio },
 ];
 
 export default function DashboardSidebar({

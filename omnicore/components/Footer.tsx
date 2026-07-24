@@ -29,11 +29,11 @@ export default function Footer() {
           </div>
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-marigold">
-              Logistics partners
+              Logistics
             </p>
             <ul className="mt-3 space-y-2 text-sm text-paper/80">
-              <li>Terminal Africa · Topship · Sendstack</li>
-              <li>Peace Mass Transit · ABC Transport</li>
+              <li>Courier API dispatch</li>
+              <li>Motor park waybill tracking</li>
             </ul>
           </div>
         </div>

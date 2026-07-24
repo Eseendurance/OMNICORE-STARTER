@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CatalogReel } from "@/lib/catalog";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import LiveViewer from "@/components/live/LiveViewer";
 
 export default function ReelCard({ reel }: { reel: CatalogReel }) {
   const vendor = reel.vendor;
@@ -9,24 +10,36 @@ export default function ReelCard({ reel }: { reel: CatalogReel }) {
 
   return (
     <div className="relative flex h-[calc(100vh-8rem)] min-h-[520px] w-full snap-start items-end overflow-hidden rounded-2xl border-2 border-ink bg-ink">
-      <Image
-        src={reel.poster_url}
-        alt={reel.caption}
-        fill
-        className="object-cover opacity-90"
-        sizes="(max-width: 768px) 100vw, 420px"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
+      {reel.is_live ? (
+        <LiveViewer channelName={`live-${reel.vendor_id}`} />
+      ) : reel.video_url ? (
+        <video
+          src={reel.video_url}
+          poster={reel.poster_url}
+          controls
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <Image
+          src={reel.poster_url}
+          alt={reel.caption}
+          fill
+          className="object-cover opacity-90"
+          sizes="(max-width: 768px) 100vw, 420px"
+        />
+      )}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
 
       {reel.is_live && (
-        <span className="absolute left-4 top-4 flex items-center gap-1.5 rounded-full border-2 border-paper bg-coral px-3 py-1 font-mono text-xs font-bold text-paper">
+        <span className="absolute left-4 top-4 z-10 flex items-center gap-1.5 rounded-full border-2 border-paper bg-coral px-3 py-1 font-mono text-xs font-bold text-paper">
           <span className="h-1.5 w-1.5 rounded-full bg-paper" />
           LIVE
         </span>
       )}
 
       {/* right-side action rail, TikTok-style */}
-      <div className="absolute bottom-24 right-3 flex flex-col items-center gap-5">
+      <div className="absolute bottom-24 right-3 z-10 flex flex-col items-center gap-5">
         <button className="flex flex-col items-center gap-1 text-paper" aria-label="Like">
           <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-paper bg-coral">♥</span>
           <span className="font-mono text-[11px] font-semibold">{reel.likes.toLocaleString()}</span>
