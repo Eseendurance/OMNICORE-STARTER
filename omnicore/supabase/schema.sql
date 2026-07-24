@@ -1,0 +1,143 @@
+-- supabase/schema.sql
+--
+-- Run this once in your Supabase project's SQL editor
+-- (Project → SQL Editor → New query → paste this → Run).
+-- Safe to re-run: uses IF NOT EXISTS / CREATE OR REPLACE throughout.
+--
+-- This replaces the hardcoded arrays in the old lib/data.ts with real
+-- tables. Row Level Security (RLS) is enabled everywhere so:
+--   - Anyone (including logged-out buyers) can read vendors/products.
+--   - Only the vendor who owns a product can create/edit/delete it.
+--   - Only the vendor who owns an order can see or update it.
+
+-- ── Extensions ────────────────────────────────────────────────────────────
+create extension if not exists "pgcrypto"; -- for gen_random_uuid()
+
+-- ── Vendors ───────────────────────────────────────────────────────────────
+-- One row per vendor account. id = the Supabase Auth user id (1:1),
+-- so a vendor's own row is auth.uid() = vendors.id.
+create table if not exists vendors (
+  id           uuid primary key references auth.users(id) on delete cascade,
+  slug         text unique not null,
+  name         text not null,
+  tagline      text,
+  location     text,
+  color        text not null default 'marigold' check (color in ('marigold','jade','coral','sky')),
+  whatsapp     text not null,
+  rating       numeric(2,1) not null default 5.0,
+  followers    integer not null default 0,
+  created_at   timestamptz not null default now()
+);
+
+-- ── Products ──────────────────────────────────────────────────────────────
+create table if not exists products (
+  id              uuid primary key default gen_random_uuid(),
+  vendor_id       uuid not null references vendors(id) on delete cascade,
+  title           text not null,
+  price           integer not null check (price >= 0), -- kobo-free naira integer, e.g. 28500
+  compare_at      integer check (compare_at is null or compare_at >= 0),
+  category        text not null default 'General',
+  image_url       text not null,
+  stock_left      integer not null default 0 check (stock_left >= 0),
+  live_viewers    integer not null default 0,
+  sold_today      integer not null default 0,
+  created_at      timestamptz not null default now()
+);
+
+create index if not exists products_vendor_id_idx on products(vendor_id);
+create index if not exists products_title_trgm_idx on products using gin (to_tsvector('english', title));
+
+-- ── Reels ─────────────────────────────────────────────────────────────────
+create table if not exists reels (
+  id           uuid primary key default gen_random_uuid(),
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  product_id   uuid references products(id) on delete set null,
+  caption      text not null default '',
+  video_url    text,          -- real video file (Supabase Storage or Mux/Cloudflare Stream URL)
+  poster_url   text not null, -- thumbnail/cover image
+  is_live      boolean not null default false,
+  likes        integer not null default 0,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists reels_vendor_id_idx on reels(vendor_id);
+
+-- ── Orders ────────────────────────────────────────────────────────────────
+-- Buyers order via the WhatsApp button (no cart/payment gateway in v1 —
+-- matches the original blueprint's WhatsApp-commerce-bridge model). The
+-- vendor logs the order here once confirmed, then dispatches it, which
+-- triggers the real SMS via /api/orders/waybill-notify.
+create table if not exists orders (
+  id                  uuid primary key default gen_random_uuid(),
+  vendor_id           uuid not null references vendors(id) on delete cascade,
+  product_id          uuid references products(id) on delete set null,
+  order_ref           text unique not null default ('ORD-' || substr(replace(gen_random_uuid()::text,'-',''),1,8)),
+  customer_name        text not null,
+  customer_phone       text not null,
+  amount              integer not null check (amount >= 0),
+  status              text not null default 'pending'
+                       check (status in ('pending','confirmed','shipped','delivered','cancelled')),
+
+  -- filled in when the vendor dispatches via motor park
+  transport_company   text,
+  departure_terminal  text,
+  driver_name         text,
+  driver_phone        text,
+  waybill_code        text,
+  shipped_at          timestamptz,
+
+  created_at          timestamptz not null default now()
+);
+
+create index if not exists orders_vendor_id_idx on orders(vendor_id);
+create index if not exists orders_status_idx on orders(status);
+
+-- ── Row Level Security ────────────────────────────────────────────────────
+alter table vendors  enable row level security;
+alter table products enable row level security;
+alter table reels    enable row level security;
+alter table orders   enable row level security;
+
+-- Vendors: public read (storefronts are public), owner-only write
+drop policy if exists "vendors_public_read" on vendors;
+create policy "vendors_public_read" on vendors for select using (true);
+
+drop policy if exists "vendors_owner_insert" on vendors;
+create policy "vendors_owner_insert" on vendors for insert with check (auth.uid() = id);
+
+drop policy if exists "vendors_owner_update" on vendors;
+create policy "vendors_owner_update" on vendors for update using (auth.uid() = id);
+
+-- Products: public read, owner-only write
+drop policy if exists "products_public_read" on products;
+create policy "products_public_read" on products for select using (true);
+
+drop policy if exists "products_owner_write" on products;
+create policy "products_owner_write" on products for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+-- Reels: public read, owner-only write
+drop policy if exists "reels_public_read" on reels;
+create policy "reels_public_read" on reels for select using (true);
+
+drop policy if exists "reels_owner_write" on reels;
+create policy "reels_owner_write" on reels for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+-- Orders: vendor can see/manage only their own orders. No public read —
+-- order data (customer phone, etc.) is private to the vendor.
+drop policy if exists "orders_owner_all" on orders;
+create policy "orders_owner_all" on orders for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+-- ── Seed data ─────────────────────────────────────────────────────────────
+-- There's no generic seed script here on purpose: vendors.id is a foreign
+-- key into auth.users, so a vendor row can only exist for a real signed-up
+-- account. To seed test data:
+--   1. Sign up through /signup in the app (creates an auth.users row).
+--   2. Copy that user's id from Supabase → Authentication → Users.
+--   3. Insert a vendors row using that id, e.g.:
+--        insert into vendors (id, slug, name, tagline, location, color, whatsapp)
+--        values ('<paste-user-id>', 'adaeze-leather', 'Adaeze Leather Co.',
+--                'Handmade footwear out of Aba', 'Aba, Abia', 'coral', '+2348031234001');
+--   4. Add products referencing that vendor's id.
