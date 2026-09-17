@@ -19,7 +19,7 @@ export default async function ReelsPage() {
         <h1 className="font-display text-2xl font-bold">Reels & Live</h1>
         <Link
           href={goLiveHref}
-          className="rounded-md border-2 border-ink bg-coral px-3 py-1.5 font-mono text-xs font-bold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+          className="rounded-md border-2 border-ink bg-coral px-3 py-1.5 font-mono text-xs font-bold text-paper shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
         >
           + Go live
         </Link>
@@ -35,7 +35,7 @@ export default async function ReelsPage() {
           </p>
           <Link
             href="/signup"
-            className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+            className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
           >
             Start selling
           </Link>

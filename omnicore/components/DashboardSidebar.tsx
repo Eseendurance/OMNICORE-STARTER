@@ -78,7 +78,7 @@ export default function DashboardSidebar({
                 <motion.div
                   layoutId="sidebar-active"
                   transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  className="absolute inset-0 rounded-lg border-2 border-ink bg-marigold shadow-[3px_3px_0_0_#14171F]"
+                  className="absolute inset-0 rounded-lg border-2 border-ink bg-marigold shadow-[3px_3px_0_0_#1E3A8A]"
                 />
               )}
               <Link
@@ -102,7 +102,7 @@ export default function DashboardSidebar({
           <Link
             href={`/store/${vendorSlug}`}
             target="_blank"
-            className="mt-2 flex items-center gap-3 rounded-lg border-2 border-ink bg-jade-tint px-3 py-2.5 text-sm font-semibold text-jade transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#14171F]"
+            className="mt-2 flex items-center gap-3 rounded-lg border-2 border-ink bg-jade-tint px-3 py-2.5 text-sm font-semibold text-jade transition hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#1E3A8A]"
           >
             <Store size={18} strokeWidth={2.25} />
             View storefront ↗

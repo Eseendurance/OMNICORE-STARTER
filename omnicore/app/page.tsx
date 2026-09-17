@@ -57,7 +57,7 @@ export default async function Home() {
             <div id="get-started" className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/signup"
-                className="rounded-md border-2 border-ink bg-marigold px-6 py-3 font-body font-bold text-ink shadow-[4px_4px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#14171F]"
+                className="rounded-md border-2 border-ink bg-marigold px-6 py-3 font-body font-bold text-ink shadow-[4px_4px_0_0_#1E3A8A] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1E3A8A]"
               >
                 Start selling — it&apos;s free
               </Link>
@@ -69,7 +69,7 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl border-2 border-ink shadow-[8px_8px_0_0_#14171F]">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl border-2 border-ink shadow-[8px_8px_0_0_#1E3A8A]">
             <Image
               src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=700"
               alt="Vendor packing an order for dispatch"
@@ -94,7 +94,7 @@ export default async function Home() {
           {vendors.length === 0 ? (
             <Link
               href="/signup"
-              className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+              className="mt-4 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
             >
               Claim your storefront
             </Link>
@@ -122,7 +122,7 @@ export default async function Home() {
           {steps.map((s, i) => (
             <div
               key={s.n}
-              className="rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#14171F]"
+              className="rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#1E3A8A]"
             >
               <span className="font-mono text-xs font-bold text-sky">STEP {i + 1}</span>
               <h3 className="mt-2 font-display text-lg font-bold">{s.n}</h3>
@@ -154,7 +154,7 @@ export default async function Home() {
                 <Link
                   key={p.id}
                   href={`/store/${p.vendor.slug}`}
-                  className="rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+                  className="rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
                 >
                   <div className="relative aspect-square overflow-hidden rounded-lg">
                     <Image src={p.image_url} alt={p.title} fill className="object-cover" />
@@ -179,7 +179,7 @@ export default async function Home() {
           ].map((p) => (
             <div
               key={p.name}
-              className={`rounded-xl border-2 border-ink p-6 ${p.featured ? "bg-marigold shadow-[6px_6px_0_0_#14171F]" : "bg-white shadow-[4px_4px_0_0_#14171F]"}`}
+              className={`rounded-xl border-2 border-ink p-6 ${p.featured ? "bg-marigold shadow-[6px_6px_0_0_#1E3A8A]" : "bg-white shadow-[4px_4px_0_0_#1E3A8A]"}`}
             >
               <h3 className="font-display text-lg font-bold">{p.name}</h3>
               <p className="mt-2 font-display text-3xl font-bold">{p.price}</p>

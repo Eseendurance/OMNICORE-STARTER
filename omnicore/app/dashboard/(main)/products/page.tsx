@@ -22,7 +22,7 @@ export default async function ProductsPage() {
         <h2 className="font-display text-lg font-bold">Your products</h2>
         <Link
           href="/dashboard/products/new"
-          className="rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+          className="rounded-md border-2 border-ink bg-marigold px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
         >
           + Add product
         </Link>
@@ -37,7 +37,7 @@ export default async function ProductsPage() {
           {products.map((p) => (
             <FadeInItem
               key={p.id}
-              className="flex gap-3 rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#14171F]"
+              className="flex gap-3 rounded-xl border-2 border-ink bg-white p-3 shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_#1E3A8A]"
             >
               <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-ink/5">
                 <Image src={p.image_url} alt={p.title} fill className="object-cover" />

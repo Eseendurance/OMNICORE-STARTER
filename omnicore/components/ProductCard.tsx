@@ -18,7 +18,7 @@ export default function ProductCard({ product }: { product: CatalogProduct }) {
       : null;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border-2 border-ink bg-white shadow-[4px_4px_0_0_#14171F] transition hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#14171F]">
+    <div className="group flex flex-col overflow-hidden rounded-xl border-2 border-ink bg-white shadow-[4px_4px_0_0_#1E3A8A] transition hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#1E3A8A]">
       <div className="relative aspect-square w-full overflow-hidden bg-ink/5">
         <Image
           src={product.image_url}

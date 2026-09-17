@@ -44,7 +44,7 @@ export default async function OrderDetailPage({
         </span>
       </div>
 
-      <div className="mt-4 rounded-xl border-2 border-ink bg-white p-4 text-sm shadow-[3px_3px_0_0_#14171F]">
+      <div className="mt-4 rounded-xl border-2 border-ink bg-white p-4 text-sm shadow-[3px_3px_0_0_#1E3A8A]">
         <p><span className="text-ink/50">Customer:</span> {order.customer_name}</p>
         <p><span className="text-ink/50">Phone:</span> {order.customer_phone}</p>
         <p><span className="text-ink/50">Amount:</span> ₦{order.amount.toLocaleString()}</p>

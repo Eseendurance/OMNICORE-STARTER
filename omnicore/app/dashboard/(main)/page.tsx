@@ -37,7 +37,7 @@ export default async function DashboardOverview() {
           <FadeInItem key={s.label}>
             <Link
               href={s.href}
-              className="block rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#14171F]"
+              className="block rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#1E3A8A] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_#1E3A8A]"
             >
               <p className="font-mono text-xs uppercase tracking-widest text-ink/50">{s.label}</p>
               <p className="mt-2 font-display text-4xl font-bold">{s.value}</p>

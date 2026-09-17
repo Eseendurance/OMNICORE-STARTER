@@ -7,14 +7,14 @@
 */
 :root {
   --paper: #ffffff;
-  --ink: #0f172a;
+  --ink: #1E3A8A;
   --marigold: #2563eb;
-  --jade: #15803d;
-  --coral: #dc2626;
+  --jade: #1D4ED8;
+  --coral: #2563EB;
   --sky: #60a5fa;
   --marigold-ink: #ffffff;
-  --jade-tint: #f0fdf4;
-  --coral-tint: #fef2f2;
+  --jade-tint: #EFF6FF;
+  --coral-tint: #DBEAFE;
   --sky-tint: #eff6ff;
 }
 

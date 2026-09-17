@@ -36,7 +36,7 @@ export default function SignupForm() {
             </p>
             <Link
               href="/login"
-              className="mt-6 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2.5 font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+              className="mt-6 inline-block rounded-md border-2 border-ink bg-marigold px-4 py-2.5 font-bold shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
             >
               Go to sign in
             </Link>
@@ -105,9 +105,9 @@ export default function SignupForm() {
                 variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
                 type="submit"
                 disabled={pending}
-                whileHover={{ y: -2, boxShadow: "5px 5px 0 0 #14171F" }}
-                whileTap={{ y: 0, boxShadow: "2px 2px 0 0 #14171F" }}
-                className="mt-2 rounded-md border-2 border-ink bg-marigold px-4 py-2.5 font-bold shadow-[3px_3px_0_0_#14171F] disabled:opacity-60"
+                whileHover={{ y: -2, boxShadow: "5px 5px 0 0 #1E3A8A" }}
+                whileTap={{ y: 0, boxShadow: "2px 2px 0 0 #1E3A8A" }}
+                className="mt-2 rounded-md border-2 border-ink bg-marigold px-4 py-2.5 font-bold shadow-[3px_3px_0_0_#1E3A8A] disabled:opacity-60"
               >
                 {pending ? "Creating account…" : "Create account"}
               </motion.button>

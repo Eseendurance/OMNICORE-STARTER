@@ -43,7 +43,7 @@ export default function WhatsAppButton({
       // stopPropagation so the button works even when nested inside a
       // clickable card/link (ProductCard, ReelCard)
       onClick={(e) => e.stopPropagation()}
-      className={`inline-flex items-center justify-center gap-1.5 rounded-md border-2 border-ink bg-jade px-3 py-2 font-mono text-xs font-semibold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#14171F] ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 rounded-md border-2 border-ink bg-jade px-3 py-2 font-mono text-xs font-semibold text-paper shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#1E3A8A] ${className}`}
     >
       <span aria-hidden>💬</span>
       Order via WhatsApp

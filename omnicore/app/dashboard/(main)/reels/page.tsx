@@ -22,13 +22,13 @@ export default async function DashboardReelsPage() {
         <div className="flex gap-2">
           <Link
             href="/dashboard/reels/new"
-            className="rounded-md border-2 border-ink bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+            className="rounded-md border-2 border-ink bg-white px-4 py-2 text-sm font-bold shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
           >
             + Upload video
           </Link>
           <Link
             href="/dashboard/live"
-            className="rounded-md border-2 border-ink bg-coral px-4 py-2 text-sm font-bold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+            className="rounded-md border-2 border-ink bg-coral px-4 py-2 text-sm font-bold text-paper shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
           >
             ● Go live
           </Link>
@@ -44,7 +44,7 @@ export default async function DashboardReelsPage() {
           {reels.map((r) => (
             <FadeInItem
               key={r.id}
-              className="overflow-hidden rounded-xl border-2 border-ink bg-white shadow-[3px_3px_0_0_#14171F]"
+              className="overflow-hidden rounded-xl border-2 border-ink bg-white shadow-[3px_3px_0_0_#1E3A8A]"
             >
               <div className="relative aspect-[9/16] max-h-64 w-full overflow-hidden bg-ink/5">
                 {r.is_live ? (

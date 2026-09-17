@@ -110,7 +110,7 @@ export default function Broadcaster({
         {status === "idle" || status === "error" ? (
           <button
             onClick={goLive}
-            className="w-full rounded-md border-2 border-ink bg-coral px-4 py-3 font-bold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+            className="w-full rounded-md border-2 border-ink bg-coral px-4 py-3 font-bold text-paper shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
           >
             ● Go live
           </button>

@@ -28,7 +28,7 @@ export default function SearchBar({
       />
       <button
         type="submit"
-        className="shrink-0 rounded-md border-2 border-ink bg-sky px-4 py-3 font-body text-sm font-bold text-paper shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5"
+        className="shrink-0 rounded-md border-2 border-ink bg-sky px-4 py-3 font-body text-sm font-bold text-paper shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5"
       >
         Search
       </button>

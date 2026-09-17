@@ -49,7 +49,7 @@ export default async function Navbar() {
           )}
           <Link
             href={vendor ? "/dashboard/products/new" : "/signup"}
-            className="rounded-md border-2 border-ink bg-marigold px-4 py-2 font-body text-sm font-bold text-ink shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#14171F]"
+            className="rounded-md border-2 border-ink bg-marigold px-4 py-2 font-body text-sm font-bold text-ink shadow-[3px_3px_0_0_#1E3A8A] transition hover:-translate-y-0.5 hover:shadow-[4px_4px_0_0_#1E3A8A]"
           >
             {vendor ? "Add product" : "Start selling"}
           </Link>
