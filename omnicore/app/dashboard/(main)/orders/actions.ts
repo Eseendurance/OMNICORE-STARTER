@@ -120,6 +120,23 @@ export async function dispatchOrder(
 
   if (updateError) return { error: updateError.message };
 
+  // Auto-create a 'shipped' social post so buyers and followers see real dispatch proof.
+  try {
+    const routeLabel = `${departureTerminal} → ${transportCompany} #${waybillCode}`;
+    const postBody = `Your parcel left ${departureTerminal} with ${transportCompany}. Driver: ${driverName} (${driverPhone}). Waybill ${waybillCode}`;
+    await supabase.from('social_posts').insert({
+      vendor_id: vendor.id,
+      order_id: order.id,
+      kind: 'shipped',
+      body: postBody,
+      route_label: routeLabel,
+      depth_score: 1,
+    });
+  } catch (err) {
+    // Non-fatal: log and continue
+    console.error('Could not create shipped post:', err);
+  }
+
   revalidatePath(`/dashboard/orders/${orderId}`);
   revalidatePath("/dashboard/orders");
 

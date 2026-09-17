@@ -4,6 +4,7 @@ import { getCurrentVendor } from "@/lib/vendor";
 const links = [
   { href: "/explore", label: "Explore" },
   { href: "/reels", label: "Reels" },
+  { href: "/community", label: "Community" },
   { href: "/#pricing", label: "Pricing" },
 ];
 

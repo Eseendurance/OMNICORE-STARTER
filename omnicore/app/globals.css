@@ -6,16 +6,16 @@
   waybill slips. Bright, market-stall energy. No dark backgrounds.
 */
 :root {
-  --paper: #fffcf5;      /* warm bright base, never dark */
-  --ink: #14171f;        /* near-black navy, text only */
-  --marigold: #ffb100;   /* brand / primary CTA */
-  --jade: #00875a;       /* money, growth, confirmed */
-  --coral: #ff4b3e;      /* urgency, live, badges */
-  --sky: #2e9cff;        /* links, info, buyer actions */
-  --marigold-ink: #4a2e00;
-  --jade-tint: #e6f6ef;
-  --coral-tint: #ffe9e7;
-  --sky-tint: #e8f4ff;
+  --paper: #ffffff;
+  --ink: #0f172a;
+  --marigold: #2563eb;
+  --jade: #15803d;
+  --coral: #dc2626;
+  --sky: #60a5fa;
+  --marigold-ink: #ffffff;
+  --jade-tint: #f0fdf4;
+  --coral-tint: #fef2f2;
+  --sky-tint: #eff6ff;
 }
 
 @theme inline {
@@ -38,6 +38,11 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--sky-tint);
+  color: var(--ink);
 }
 
 /* Manifest board: flip-sign ticker used for live proof + logistics status */

@@ -1,9 +1,8 @@
 // lib/supabase/types.ts
 //
-// Hand-written to match supabase/schema.sql. If you change the schema,
-// update this file too (or generate it properly later with:
-//   npx supabase gen types typescript --project-id <your-project-id>
-// once you have the Supabase CLI set up).
+// Hand-written to match supabase/schema.sql (plus social extension).
+// If you change the schema, update this file too (or generate it properly
+// later with: npx supabase gen types typescript --project-id <your-project-id>)
 
 export type Database = {
   public: {
@@ -19,6 +18,7 @@ export type Database = {
           whatsapp: string;
           rating: number;
           followers: number;
+          is_verified: boolean;
           created_at: string;
         };
         Insert: {
@@ -31,6 +31,7 @@ export type Database = {
           whatsapp: string;
           rating?: number;
           followers?: number;
+          is_verified?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["vendors"]["Insert"]>;
       };
@@ -115,6 +116,123 @@ export type Database = {
           status?: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Row"]>;
+      };
+
+      /* Social/Community extension */
+      vendor_follows: {
+        Row: {
+          follower_id: string;
+          vendor_id: string;
+          created_at: string;
+        };
+        Insert: {
+          follower_id: string;
+          vendor_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["vendor_follows"]["Insert"]>;
+      };
+
+      social_posts: {
+        Row: {
+          id: string;
+          vendor_id: string;
+          product_id: string | null;
+          order_id: string | null;
+          kind: "product_drop" | "shipped" | "restock" | "reel";
+          body: string;
+          media_url: string | null;
+          route_label: string | null;
+          depth_score: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          vendor_id: string;
+          product_id?: string | null;
+          order_id?: string | null;
+          kind?: "product_drop" | "shipped" | "restock" | "reel";
+          body: string;
+          media_url?: string | null;
+          route_label?: string | null;
+          depth_score?: number;
+        };
+        Update: Partial<Database["public"]["Tables"]["social_posts"]["Insert"]>;
+      };
+
+      social_comments: {
+        Row: {
+          id: string;
+          post_id: string;
+          author_id: string;
+          body: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          post_id: string;
+          author_id: string;
+          body: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["social_comments"]["Insert"]>;
+      };
+
+      social_reactions: {
+        Row: {
+          post_id: string;
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          post_id: string;
+          user_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["social_reactions"]["Insert"]>;
+      };
+
+      vendor_spaces: {
+        Row: {
+          id: string;
+          owner_id: string;
+          name: string;
+          description: string | null;
+          category: string;
+          privacy: "public" | "invite_only";
+          is_live: boolean;
+          live_channel: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id: string;
+          name: string;
+          description?: string | null;
+          category?: string;
+          privacy?: "public" | "invite_only";
+          is_live?: boolean;
+          live_channel?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["vendor_spaces"]["Insert"]>;
+      };
+
+      creator_support: {
+        Row: {
+          id: string;
+          supporter_id: string;
+          vendor_id: string;
+          amount: number;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          supporter_id: string;
+          vendor_id: string;
+          amount: number;
+          note?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["creator_support"]["Insert"]>;
       };
     };
     Views: Record<string, never>;
