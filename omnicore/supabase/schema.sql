@@ -62,6 +62,32 @@ create table if not exists reels (
 
 create index if not exists reels_vendor_id_idx on reels(vendor_id);
 
+-- ── Feed posts ───────────────────────────────────────────────────────────
+-- Posts are the text/image feed entries shown alongside short-form reels.
+create table if not exists posts (
+  id           uuid primary key default gen_random_uuid(),
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  product_id   uuid references products(id) on delete set null,
+  body         text not null,
+  media_url    text,
+  media_type   text not null default 'image' check (media_type in ('image', 'video')),
+  likes        integer not null default 0 check (likes >= 0),
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists posts_vendor_id_idx on posts(vendor_id);
+create index if not exists posts_created_at_idx on posts(created_at desc);
+
+create table if not exists post_comments (
+  id           uuid primary key default gen_random_uuid(),
+  post_id      uuid not null references posts(id) on delete cascade,
+  author_id    uuid not null references vendors(id) on delete cascade,
+  body         text not null,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists post_comments_post_id_idx on post_comments(post_id);
+
 -- ── Orders ────────────────────────────────────────────────────────────────
 -- Buyers order via the WhatsApp button (no cart/payment gateway in v1 —
 -- matches the original blueprint's WhatsApp-commerce-bridge model). The
@@ -96,6 +122,8 @@ create index if not exists orders_status_idx on orders(status);
 alter table vendors  enable row level security;
 alter table products enable row level security;
 alter table reels    enable row level security;
+alter table posts    enable row level security;
+alter table post_comments enable row level security;
 alter table orders   enable row level security;
 
 -- Vendors: public read (storefronts are public), owner-only write
@@ -123,6 +151,21 @@ create policy "reels_public_read" on reels for select using (true);
 drop policy if exists "reels_owner_write" on reels;
 create policy "reels_owner_write" on reels for all
   using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+-- Feed posts/comments: public read, vendor-owned writes
+drop policy if exists "posts_public_read" on posts;
+create policy "posts_public_read" on posts for select using (true);
+
+drop policy if exists "posts_owner_write" on posts;
+create policy "posts_owner_write" on posts for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+drop policy if exists "post_comments_public_read" on post_comments;
+create policy "post_comments_public_read" on post_comments for select using (true);
+
+drop policy if exists "post_comments_owner_write" on post_comments;
+create policy "post_comments_owner_write" on post_comments for all
+  using (auth.uid() = author_id) with check (auth.uid() = author_id);
 
 -- Orders: vendor can see/manage only their own orders. No public read —
 -- order data (customer phone, etc.) is private to the vendor.
