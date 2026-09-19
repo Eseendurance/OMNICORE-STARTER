@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 /*
-  OmniCore token system — "Manifest Board"
+  KiVo token system — "Manifest Board"
   Grounded in the brief's own world: motor-park departure boards and
   waybill slips. Bright, market-stall energy. No dark backgrounds.
 */
 :root {
-  --paper: #fffcf5;      /* warm bright base, never dark */
-  --ink: #14171f;        /* near-black navy, text only */
-  --marigold: #ffb100;   /* brand / primary CTA */
-  --jade: #00875a;       /* money, growth, confirmed */
-  --coral: #ff4b3e;      /* urgency, live, badges */
-  --sky: #2e9cff;        /* links, info, buyer actions */
-  --marigold-ink: #4a2e00;
-  --jade-tint: #e6f6ef;
-  --coral-tint: #ffe9e7;
+  --paper: #ffffff;
+  --ink: #1769aa;
+  --marigold: #dbeeff;
+  --jade: #2e9cff;
+  --coral: #1d75c9;
+  --sky: #1769aa;
+  --marigold-ink: #1769aa;
+  --jade-tint: #e8f4ff;
+  --coral-tint: #e8f4ff;
   --sky-tint: #e8f4ff;
 }
 

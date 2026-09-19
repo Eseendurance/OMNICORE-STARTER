@@ -23,9 +23,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OmniCore AI — Sell online. Ship anywhere.",
+  title: "KiVo — Sell online. Ship anywhere.",
   description:
-    "OmniCore AI is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
+    "KiVo is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
 };
 
 export default function RootLayout({

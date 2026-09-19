@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import BrandLogo from "@/components/BrandLogo";
 
 const toneMap = {
   sky: { bg: "bg-sky-tint", chip: "bg-sky", text: "text-sky" },
@@ -48,10 +49,7 @@ export default function AuthBrandPanel({
         transition={{ duration: 0.5 }}
         className="relative z-10 flex items-center gap-2 font-display text-lg font-bold"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-md border-2 border-ink bg-marigold font-mono text-sm font-bold">
-          OC
-        </span>
-        OmniCore
+        <BrandLogo compact />
       </motion.div>
 
       <motion.div

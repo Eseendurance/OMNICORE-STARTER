@@ -15,7 +15,7 @@ const manifestEntries = [
 const steps = [
   {
     n: "Set up your store",
-    d: "Add products, prices, and photos. OmniCore generates your storefront and search listing automatically.",
+    d: "Add products, prices, and photos. KiVo generates your storefront and search listing automatically.",
   },
   {
     n: "Get discovered",
@@ -49,7 +49,7 @@ export default async function Home() {
               Shipped the way you already ship.
             </h1>
             <p className="mt-5 max-w-md text-lg text-ink/70">
-              OmniCore AI gives you a storefront, a place in the central
+              KiVo gives you a storefront, a place in the central
               marketplace, live proof that people are actually watching, and
               a logistics desk that understands both courier APIs and motor
               park waybills.
@@ -89,7 +89,7 @@ export default async function Home() {
       <section className="border-y-2 border-ink bg-white py-10">
         <div className="mx-auto max-w-6xl px-5">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/50">
-            {vendors.length > 0 ? "Already shipping on OmniCore" : "Be the first vendor on OmniCore"}
+            {vendors.length > 0 ? "Already shipping on KiVo" : "Be the first vendor on KiVo"}
           </p>
           {vendors.length === 0 ? (
             <Link

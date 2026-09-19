@@ -48,13 +48,13 @@ function buildMessage(p: WaybillPayload) {
   return (
     `Hi ${p.customerName}, your order ${p.orderId} is on the way via ${p.transportCompany} ` +
     `from ${p.departureTerminal}. Driver: ${p.driverName} (${p.driverPhone}). ` +
-    `Waybill/parcel code: ${p.waybillCode}. Please present ID at pickup. — OmniCore`
+    `Waybill/parcel code: ${p.waybillCode}. Please present ID at pickup. — KiVo`
   );
 }
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.TERMII_API_KEY;
-  const senderId = process.env.TERMII_SENDER_ID || "OmniCore";
+  const senderId = process.env.TERMII_SENDER_ID || "KiVo";
   if (!apiKey) {
     return NextResponse.json(
       { error: "TERMII_API_KEY is not configured on the server." },

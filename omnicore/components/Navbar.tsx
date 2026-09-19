@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCurrentVendor } from "@/lib/vendor";
+import BrandLogo from "@/components/BrandLogo";
 
 const links = [
   { href: "/explore", label: "Explore" },
@@ -13,12 +14,7 @@ export default async function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-paper">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Link href="/" className="flex items-center gap-2 font-display text-xl font-bold">
-          <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink font-mono text-sm font-semibold text-marigold">
-            OC
-          </span>
-          <span className="font-display font-bold">OmniCore</span>
-        </Link>
+        <BrandLogo />
         <nav className="hidden items-center gap-6 md:flex">
           {links.map((l) => (
             <Link
