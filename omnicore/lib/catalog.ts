@@ -12,6 +12,8 @@ import type { Database } from "@/lib/supabase/types";
 export type VendorRow = Database["public"]["Tables"]["vendors"]["Row"];
 export type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 export type ReelRow = Database["public"]["Tables"]["reels"]["Row"];
+export type PostRow = Database["public"]["Tables"]["posts"]["Row"];
+export type PostCommentRow = Database["public"]["Tables"]["post_comments"]["Row"];
 
 export type VendorSummary = Pick<VendorRow, "slug" | "name" | "whatsapp" | "color">;
 
@@ -19,6 +21,11 @@ export type CatalogProduct = ProductRow & { vendor: VendorSummary };
 export type CatalogReel = ReelRow & {
   vendor: VendorSummary;
   product: Pick<ProductRow, "id" | "title" | "price"> | null;
+};
+export type FeedPost = PostRow & {
+  vendor: VendorSummary;
+  comments: PostCommentRow[];
+  reactions: Database["public"]["Tables"]["post_reactions"]["Row"][];
 };
 
 const VENDOR_SUMMARY_COLS = "slug, name, whatsapp, color";
@@ -91,4 +98,15 @@ export async function getReels(): Promise<CatalogReel[]> {
     .select(`*, vendor:vendors(${VENDOR_SUMMARY_COLS}), product:products(id, title, price)`)
     .order("created_at", { ascending: false });
   return ((data as unknown as CatalogReel[]) ?? []).filter((r) => r.vendor);
+}
+
+export async function getPostById(id: string): Promise<FeedPost | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("posts")
+    .select(`*, vendor:vendors(${VENDOR_SUMMARY_COLS}), comments:post_comments(*), reactions:post_reactions(*)`)
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load feed post: ${error.message}`);
+  return (data as unknown as FeedPost | null) ?? null;
 }

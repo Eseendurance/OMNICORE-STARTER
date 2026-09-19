@@ -86,6 +86,21 @@ export type Database = {
         };
         Update: Partial<Database["public"]["Tables"]["reels"]["Insert"]>;
       };
+      posts: {
+        Row: { id: string; vendor_id: string; body: string; media_url: string | null; created_at: string };
+        Insert: { id?: string; vendor_id: string; body: string; media_url?: string | null };
+        Update: Partial<Database["public"]["Tables"]["posts"]["Insert"]>;
+      };
+      post_comments: {
+        Row: { id: string; post_id: string; vendor_id: string; body: string; created_at: string };
+        Insert: { id?: string; post_id: string; vendor_id: string; body: string };
+        Update: Partial<Database["public"]["Tables"]["post_comments"]["Insert"]>;
+      };
+      post_reactions: {
+        Row: { post_id: string; vendor_id: string; reaction: "LIKE" | "FIRE" | "LAUGH" | "ROCKET" | "IDEA"; created_at: string };
+        Insert: { post_id: string; vendor_id: string; reaction: "LIKE" | "FIRE" | "LAUGH" | "ROCKET" | "IDEA" };
+        Update: Partial<Database["public"]["Tables"]["post_reactions"]["Insert"]>;
+      };
       orders: {
         Row: {
           id: string;

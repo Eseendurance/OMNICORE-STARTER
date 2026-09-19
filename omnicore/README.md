@@ -13,11 +13,22 @@ design system ("Manifest Board" — inspired by motor-park departure boards).
 | `/store/[vendor]` | Layer 2 | Dynamic storefront per vendor, with live-proof badges, stock bars, countdown |
 | `/explore` | Layer 3 | Central marketplace with live search across all vendors |
 | `/reels` | New | Vertical swipe feed of vendor product videos / live drops |
+| `/api/feed/[postId]` | New | Optional social post and reaction feed endpoint |
+| `/api/feed/[postId]/react` | New | Authenticated reaction toggle endpoint |
 | `/api/search` | — | Search endpoint, currently backed by mock data in `lib/data.ts` |
 
 All product/vendor data is mocked in `lib/data.ts` so the app runs and
 deploys with zero configuration. Replace that file with real database calls
 when you're ready.
+
+### Optional social layer
+
+The Supabase schema adds `posts`, `post_comments`, and `post_reactions` without
+changing the existing vendor, product, reel, or order tables. Existing vendors
+are the social profiles, so no second Prisma user system is introduced. Run
+the complete `supabase/schema.sql` in Supabase before using the social routes.
+The reusable `components/social/ReactionPicker.tsx` uses optimistic updates
+and rolls back when the API request fails.
 
 ## Run locally
 

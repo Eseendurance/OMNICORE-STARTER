@@ -62,6 +62,36 @@ create table if not exists reels (
 
 create index if not exists reels_vendor_id_idx on reels(vendor_id);
 
+-- ── Optional social posts ────────────────────────────────────────────────
+-- Uses vendors as the existing authenticated user/profile model.
+create table if not exists posts (
+  id           uuid primary key default gen_random_uuid(),
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  body         text not null check (char_length(body) between 1 and 5000),
+  media_url    text,
+  created_at   timestamptz not null default now()
+);
+
+create table if not exists post_comments (
+  id           uuid primary key default gen_random_uuid(),
+  post_id      uuid not null references posts(id) on delete cascade,
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  body         text not null check (char_length(body) between 1 and 1000),
+  created_at   timestamptz not null default now()
+);
+
+create table if not exists post_reactions (
+  post_id      uuid not null references posts(id) on delete cascade,
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  reaction     text not null check (reaction in ('LIKE', 'FIRE', 'LAUGH', 'ROCKET', 'IDEA')),
+  created_at   timestamptz not null default now(),
+  primary key (post_id, vendor_id, reaction)
+);
+
+create index if not exists posts_created_at_idx on posts(created_at desc);
+create index if not exists post_comments_post_id_idx on post_comments(post_id);
+create index if not exists post_reactions_post_id_idx on post_reactions(post_id);
+
 -- ── Orders ────────────────────────────────────────────────────────────────
 -- Buyers order via the WhatsApp button (no cart/payment gateway in v1 —
 -- matches the original blueprint's WhatsApp-commerce-bridge model). The
@@ -96,6 +126,9 @@ create index if not exists orders_status_idx on orders(status);
 alter table vendors  enable row level security;
 alter table products enable row level security;
 alter table reels    enable row level security;
+alter table posts    enable row level security;
+alter table post_comments enable row level security;
+alter table post_reactions enable row level security;
 alter table orders   enable row level security;
 
 -- Vendors: public read (storefronts are public), owner-only write
@@ -122,6 +155,24 @@ create policy "reels_public_read" on reels for select using (true);
 
 drop policy if exists "reels_owner_write" on reels;
 create policy "reels_owner_write" on reels for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+drop policy if exists "posts_public_read" on posts;
+create policy "posts_public_read" on posts for select using (true);
+drop policy if exists "posts_owner_write" on posts;
+create policy "posts_owner_write" on posts for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+drop policy if exists "post_comments_public_read" on post_comments;
+create policy "post_comments_public_read" on post_comments for select using (true);
+drop policy if exists "post_comments_owner_write" on post_comments;
+create policy "post_comments_owner_write" on post_comments for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+drop policy if exists "post_reactions_public_read" on post_reactions;
+create policy "post_reactions_public_read" on post_reactions for select using (true);
+drop policy if exists "post_reactions_owner_write" on post_reactions;
+create policy "post_reactions_owner_write" on post_reactions for all
   using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
 
 -- Orders: vendor can see/manage only their own orders. No public read —
