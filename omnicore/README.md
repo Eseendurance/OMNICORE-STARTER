@@ -1,6 +1,6 @@
-# OmniCore AI — starter
+# KiVo — starter
 
-A deployable Next.js starter matching the three-layer OmniCore architecture:
+A deployable Next.js starter matching the three-layer KiVo architecture:
 a SaaS landing page for vendors, dynamic vendor storefronts, a searchable
 central marketplace, and a TikTok-style Reels/Live feed. Bright, no-dark-mode
 design system ("Manifest Board" — inspired by motor-park departure boards).

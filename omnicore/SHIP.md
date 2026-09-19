@@ -64,7 +64,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<from Supabase Project Settings → API>
 NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
 
 TERMII_API_KEY=<from termii.com>
-TERMII_SENDER_ID=OmniCore
+TERMII_SENDER_ID=KiVo
 REMOVE_BG_API_KEY=<from remove.bg/api>
 
 NEXT_PUBLIC_AGORA_APP_ID=<from console.agora.io>

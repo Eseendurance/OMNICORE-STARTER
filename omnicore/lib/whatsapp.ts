@@ -27,7 +27,7 @@ export function buildWhatsAppOrderLink(phone: string, item: WhatsAppOrderItem): 
     `Hi ${item.vendorName}, I'd like to order:`,
     `• ${item.title} — ${naira.format(item.price)}`,
     item.url ? `Link: ${item.url}` : null,
-    `(sent via OmniCore)`,
+    `(sent via KiVo)`,
   ].filter(Boolean) as string[];
 
   const message = encodeURIComponent(lines.join("\n"));

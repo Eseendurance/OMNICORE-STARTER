@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "@/components/BrandLogo";
 
 export default function Footer() {
   return (
@@ -6,12 +7,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-10">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <div className="flex items-center gap-2 font-display text-lg font-bold">
-              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-marigold font-mono text-xs font-bold text-ink">
-                OC
-              </span>
-              OmniCore
-            </div>
+            <BrandLogo compact />
             <p className="mt-3 max-w-xs text-sm text-paper/70">
               The storefront, marketplace, and logistics engine built for
               vendors shipping across Nigeria.
@@ -38,8 +34,9 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-paper/20 pt-6 text-xs text-paper/50">
-          © {new Date().getFullYear()} OmniCore AI. Built for vendors, not ad
+          © {new Date().getFullYear()} KiVo. Built for vendors, not ad
           networks.
+          <span className="ml-2 text-sky">Powered by BRIEF GROUP</span>
         </div>
       </div>
     </footer>
