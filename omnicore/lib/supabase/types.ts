@@ -86,44 +86,6 @@ export type Database = {
         };
         Update: Partial<Database["public"]["Tables"]["reels"]["Insert"]>;
       };
-      posts: {
-        Row: {
-          id: string;
-          vendor_id: string;
-          product_id: string | null;
-          body: string;
-          media_url: string | null;
-          media_type: "image" | "video";
-          likes: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          vendor_id: string;
-          product_id?: string | null;
-          body: string;
-          media_url?: string | null;
-          media_type?: "image" | "video";
-          likes?: number;
-        };
-        Update: Partial<Database["public"]["Tables"]["posts"]["Insert"]>;
-      };
-      post_comments: {
-        Row: {
-          id: string;
-          post_id: string;
-          author_id: string;
-          body: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          post_id: string;
-          author_id: string;
-          body: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["post_comments"]["Insert"]>;
-      };
       orders: {
         Row: {
           id: string;

@@ -13,16 +13,11 @@ design system ("Manifest Board" — inspired by motor-park departure boards).
 | `/store/[vendor]` | Layer 2 | Dynamic storefront per vendor, with live-proof badges, stock bars, countdown |
 | `/explore` | Layer 3 | Central marketplace with live search across all vendors |
 | `/reels` | New | Vertical swipe feed of vendor product videos / live drops |
-| `/api/feed/[postId]` | — | Fetches a feed post with its public comments |
 | `/api/search` | — | Search endpoint, currently backed by mock data in `lib/data.ts` |
 
 All product/vendor data is mocked in `lib/data.ts` so the app runs and
 deploys with zero configuration. Replace that file with real database calls
 when you're ready.
-
-The Supabase schema also includes `posts` and `post_comments` for text/image
-feed updates. Run the complete `supabase/schema.sql` in the Supabase SQL
-editor after deploying the schema changes.
 
 ## Run locally
 
