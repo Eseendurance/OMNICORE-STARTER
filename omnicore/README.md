@@ -30,6 +30,13 @@ the complete `supabase/schema.sql` in Supabase before using the social routes.
 The reusable `components/social/ReactionPicker.tsx` uses optimistic updates
 and rolls back when the API request fails.
 
+Trust and payments use the existing architecture as well: `vendor_follows`
+stores follower relationships, `order_events` preserves order history, and
+`/api/payments/initialize` supports Paystack by default with optional
+Flutterwave. Keep secret keys server-only; configure `PAYSTACK_SECRET_KEY`,
+`FLUTTERWAVE_SECRET_KEY`, and the existing `NEXT_PUBLIC_MARKETPLACE_URL` in
+Vercel.
+
 ### Camera and media capture
 
 Reel uploads support gallery video selection or browser camera recording with

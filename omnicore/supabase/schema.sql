@@ -26,8 +26,49 @@ create table if not exists vendors (
   whatsapp     text not null,
   rating       numeric(2,1) not null default 5.0,
   followers    integer not null default 0,
+  following    integer not null default 0,
+  is_verified  boolean not null default false,
+  verified_at  timestamptz,
+  response_rate numeric(5,2) not null default 0,
   created_at   timestamptz not null default now()
 );
+
+alter table vendors add column if not exists following integer not null default 0;
+alter table vendors add column if not exists is_verified boolean not null default false;
+alter table vendors add column if not exists verified_at timestamptz;
+alter table vendors add column if not exists response_rate numeric(5,2) not null default 0;
+
+create table if not exists vendor_follows (
+  follower_id  uuid not null references vendors(id) on delete cascade,
+  following_id uuid not null references vendors(id) on delete cascade,
+  created_at   timestamptz not null default now(),
+  primary key (follower_id, following_id),
+  check (follower_id <> following_id)
+);
+
+create index if not exists vendor_follows_following_idx on vendor_follows(following_id);
+
+create or replace function update_vendor_follow_counts()
+returns trigger
+language plpgsql
+security definer
+as $$
+begin
+  if TG_OP = 'INSERT' then
+    update vendors set following = following + 1 where id = NEW.follower_id;
+    update vendors set followers = followers + 1 where id = NEW.following_id;
+    return NEW;
+  end if;
+  update vendors set following = greatest(0, following - 1) where id = OLD.follower_id;
+  update vendors set followers = greatest(0, followers - 1) where id = OLD.following_id;
+  return OLD;
+end;
+$$;
+
+drop trigger if exists vendor_follow_counts_trigger on vendor_follows;
+create trigger vendor_follow_counts_trigger
+after insert or delete on vendor_follows
+for each row execute function update_vendor_follow_counts();
 
 -- ── Products ──────────────────────────────────────────────────────────────
 create table if not exists products (
@@ -122,6 +163,17 @@ create table if not exists orders (
 create index if not exists orders_vendor_id_idx on orders(vendor_id);
 create index if not exists orders_status_idx on orders(status);
 
+create table if not exists order_events (
+  id           uuid primary key default gen_random_uuid(),
+  order_id     uuid not null references orders(id) on delete cascade,
+  vendor_id    uuid not null references vendors(id) on delete cascade,
+  status       text not null check (status in ('pending','confirmed','shipped','delivered','cancelled','refunded','disputed')),
+  note         text,
+  created_at   timestamptz not null default now()
+);
+
+create index if not exists order_events_order_id_idx on order_events(order_id, created_at desc);
+
 -- ── Row Level Security ────────────────────────────────────────────────────
 alter table vendors  enable row level security;
 alter table products enable row level security;
@@ -130,6 +182,8 @@ alter table posts    enable row level security;
 alter table post_comments enable row level security;
 alter table post_reactions enable row level security;
 alter table orders   enable row level security;
+alter table vendor_follows enable row level security;
+alter table order_events enable row level security;
 
 -- Vendors: public read (storefronts are public), owner-only write
 drop policy if exists "vendors_public_read" on vendors;
@@ -140,6 +194,12 @@ create policy "vendors_owner_insert" on vendors for insert with check (auth.uid(
 
 drop policy if exists "vendors_owner_update" on vendors;
 create policy "vendors_owner_update" on vendors for update using (auth.uid() = id);
+
+drop policy if exists "vendor_follows_public_read" on vendor_follows;
+create policy "vendor_follows_public_read" on vendor_follows for select using (true);
+drop policy if exists "vendor_follows_owner_write" on vendor_follows;
+create policy "vendor_follows_owner_write" on vendor_follows for all
+  using (auth.uid() = follower_id) with check (auth.uid() = follower_id);
 
 -- Products: public read, owner-only write
 drop policy if exists "products_public_read" on products;
@@ -179,6 +239,10 @@ create policy "post_reactions_owner_write" on post_reactions for all
 -- order data (customer phone, etc.) is private to the vendor.
 drop policy if exists "orders_owner_all" on orders;
 create policy "orders_owner_all" on orders for all
+  using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
+
+drop policy if exists "order_events_owner_all" on order_events;
+create policy "order_events_owner_all" on order_events for all
   using (auth.uid() = vendor_id) with check (auth.uid() = vendor_id);
 
 -- ── Seed data ─────────────────────────────────────────────────────────────

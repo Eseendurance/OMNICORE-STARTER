@@ -4,6 +4,7 @@ import { getVendorBySlug, getProductsForVendor } from "@/lib/catalog";
 import type { CatalogProduct } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
 import Countdown from "@/components/Countdown";
+import FollowButton from "@/components/FollowButton";
 
 // Vendors are created dynamically at runtime (real signups), so this route
 // can't be statically generated at build time — it renders on demand.
@@ -45,6 +46,8 @@ export default async function StorePage({
               ★ {vendor.rating.toFixed(1)} rating
             </span>
             {items.length > 0 && <Countdown />}
+            {vendor.is_verified && <span className="rounded-full border-2 border-sky bg-white px-3 py-1 font-mono text-xs font-bold text-sky">✓ Verified business</span>}
+            <FollowButton vendorId={vendor.id} />
           </div>
         </div>
       </div>

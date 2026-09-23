@@ -25,16 +25,28 @@ export async function createOrder(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.from("orders").insert({
-    vendor_id: vendor.id,
-    product_id: productId,
-    customer_name: customerName,
-    customer_phone: customerPhone,
-    amount: Math.round(amount),
-    status: "confirmed",
-  });
+  const { data: order, error } = await supabase
+    .from("orders")
+    .insert({
+      vendor_id: vendor.id,
+      product_id: productId,
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      amount: Math.round(amount),
+      status: "confirmed",
+    })
+    .select("id")
+    .single();
 
-  if (error) return { error: error.message };
+  if (error || !order) return { error: error?.message ?? "Could not create order." };
+
+  const { error: eventError } = await supabase.from("order_events").insert({
+    order_id: order.id,
+    vendor_id: vendor.id,
+    status: "confirmed",
+    note: "Order logged by vendor.",
+  });
+  if (eventError) return { error: eventError.message };
 
   revalidatePath("/dashboard/orders");
   redirect("/dashboard/orders");
@@ -119,6 +131,20 @@ export async function dispatchOrder(
     .eq("vendor_id", vendor.id);
 
   if (updateError) return { error: updateError.message };
+
+  const { error: eventError } = await supabase.from("order_events").insert({
+    order_id: orderId,
+    vendor_id: vendor.id,
+    status: "shipped",
+    note: `Waybill ${waybillCode} via ${transportCompany}.`,
+  });
+  if (eventError) {
+    return {
+      error: null,
+      success: true,
+      warning: `Order shipped, but the order history event could not be recorded: ${eventError.message}`,
+    };
+  }
 
   revalidatePath(`/dashboard/orders/${orderId}`);
   revalidatePath("/dashboard/orders");

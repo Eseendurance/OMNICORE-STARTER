@@ -19,6 +19,10 @@ export type Database = {
           whatsapp: string;
           rating: number;
           followers: number;
+          following: number;
+          is_verified: boolean;
+          verified_at: string | null;
+          response_rate: number;
           created_at: string;
         };
         Insert: {
@@ -31,6 +35,10 @@ export type Database = {
           whatsapp: string;
           rating?: number;
           followers?: number;
+          following?: number;
+          is_verified?: boolean;
+          verified_at?: string | null;
+          response_rate?: number;
         };
         Update: Partial<Database["public"]["Tables"]["vendors"]["Insert"]>;
       };
@@ -130,6 +138,16 @@ export type Database = {
           status?: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
         };
         Update: Partial<Database["public"]["Tables"]["orders"]["Row"]>;
+      };
+      vendor_follows: {
+        Row: { follower_id: string; following_id: string; created_at: string };
+        Insert: { follower_id: string; following_id: string };
+        Update: Partial<Database["public"]["Tables"]["vendor_follows"]["Insert"]>;
+      };
+      order_events: {
+        Row: { id: string; order_id: string; vendor_id: string; status: string; note: string | null; created_at: string };
+        Insert: { id?: string; order_id: string; vendor_id: string; status: string; note?: string | null };
+        Update: Partial<Database["public"]["Tables"]["order_events"]["Insert"]>;
       };
     };
     Views: Record<string, never>;
