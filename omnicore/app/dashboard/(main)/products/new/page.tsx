@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createProduct, type ProductActionState } from "@/app/dashboard/(main)/products/actions";
+import MediaCapture from "@/components/media/MediaCapture";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -19,6 +20,12 @@ export default function NewProductPage() {
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setWorkingFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setEnhanceError(null);
+  }
+
+  function onCameraCapture(file: File) {
     setWorkingFile(file);
     setPreviewUrl(URL.createObjectURL(file));
     setEnhanceError(null);
@@ -80,6 +87,7 @@ export default function NewProductPage() {
             className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm"
           />
         </label>
+        <MediaCapture mode="image" onCapture={onCameraCapture} />
 
         {previewUrl && (
           <div className="flex items-center gap-4">

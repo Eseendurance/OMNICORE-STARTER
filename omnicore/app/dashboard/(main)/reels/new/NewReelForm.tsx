@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createReel, type ReelActionState } from "@/app/dashboard/(main)/reels/actions";
+import MediaCapture from "@/components/media/MediaCapture";
 
 export default function NewReelForm({
   products,
@@ -24,6 +25,13 @@ export default function NewReelForm({
   function onVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    setVideoFile(file);
+    setVideoPreviewUrl(URL.createObjectURL(file));
+    setPosterBlob(null);
+    setPosterPreviewUrl(null);
+  }
+
+  function onCameraCapture(file: File) {
     setVideoFile(file);
     setVideoPreviewUrl(URL.createObjectURL(file));
     setPosterBlob(null);
@@ -99,6 +107,7 @@ export default function NewReelForm({
           />
           <span className="text-xs text-ink/40">Max 60MB.</span>
         </label>
+        <MediaCapture mode="video" onCapture={onCameraCapture} />
 
         {/* Hidden elements used purely to capture a poster frame */}
         {videoPreviewUrl && (

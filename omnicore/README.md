@@ -30,6 +30,14 @@ the complete `supabase/schema.sql` in Supabase before using the social routes.
 The reusable `components/social/ReactionPicker.tsx` uses optimistic updates
 and rolls back when the API request fails.
 
+### Camera and media capture
+
+Reel uploads support gallery video selection or browser camera recording with
+front/back camera switching and client-side Natural, Bright, Soft, and Vivid
+filters. Product photos support gallery selection or camera capture. Camera
+access requires HTTPS in production (Vercel provides this automatically) and
+the user must grant browser permission.
+
 ## Run locally
 
 ```bash
