@@ -18,8 +18,7 @@ export async function startLiveReel(caption: string): Promise<{ id: string } | {
       // No pre-recorded video for a live stream — the poster is a static
       // placeholder shown only if a viewer's Agora connection is still
       // loading; the real feed is the WebRTC video track.
-      poster_url:
-        "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800&q=60",
+      poster_url: "/kivo-logo.png",
       is_live: true,
     })
     .select("id")

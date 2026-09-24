@@ -133,6 +133,50 @@ create index if not exists posts_created_at_idx on posts(created_at desc);
 create index if not exists post_comments_post_id_idx on post_comments(post_id);
 create index if not exists post_reactions_post_id_idx on post_reactions(post_id);
 
+-- ── Enterprise workspaces and audit history ─────────────────────────────
+-- Optional multi-tenant layer. Existing vendor workflows remain valid; a
+-- vendor can be linked to a workspace when the organization feature is enabled.
+create table if not exists organizations (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text unique not null,
+  created_by uuid not null references auth.users(id) on delete restrict,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists workspaces (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references organizations(id) on delete cascade,
+  name text not null,
+  slug text not null,
+  created_at timestamptz not null default now(),
+  unique (organization_id, slug)
+);
+
+create table if not exists workspace_members (
+  workspace_id uuid not null references workspaces(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  role text not null default 'viewer'
+    check (role in ('owner', 'admin', 'manager', 'viewer')),
+  created_at timestamptz not null default now(),
+  primary key (workspace_id, user_id)
+);
+
+create table if not exists audit_logs (
+  id uuid primary key default gen_random_uuid(),
+  organization_id uuid not null references organizations(id) on delete cascade,
+  workspace_id uuid references workspaces(id) on delete set null,
+  actor_id uuid references auth.users(id) on delete set null,
+  action text not null,
+  entity_type text not null,
+  entity_id text,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists workspace_members_user_id_idx on workspace_members(user_id);
+create index if not exists audit_logs_org_created_at_idx on audit_logs(organization_id, created_at desc);
+
 -- ── Orders ────────────────────────────────────────────────────────────────
 -- Buyers order via the WhatsApp button (no cart/payment gateway in v1 —
 -- matches the original blueprint's WhatsApp-commerce-bridge model). The

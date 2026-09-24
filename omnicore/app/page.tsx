@@ -106,8 +106,8 @@ export default async function Home() {
           </div>
           <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl border-2 border-ink shadow-[8px_8px_0_0_#14171F]">
             <Image
-              src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=700"
-              alt="Vendor packing an order for dispatch"
+              src="/kivo-hero.jpg"
+              alt="KiVo merchant serving a customer"
               fill
               className="object-cover"
               priority

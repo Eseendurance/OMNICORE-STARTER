@@ -49,7 +49,8 @@ the user must grant browser permission.
 
 Product background removal runs in the browser with
 `@imgly/background-removal`. The image is processed on the user’s device and
-is not uploaded to remove.bg, so `REMOVE_BG_API_KEY` is not required. The first
+is not uploaded to an external background-removal service, so no removal API
+key is required. The first
 use downloads and caches the model assets in the browser; processing speed
 depends on the user’s device and connection. Review the package/model license
 before distributing the feature commercially.
@@ -123,7 +124,8 @@ Tokens live in `app/globals.css` under `:root` / `@theme inline`:
 - `--coral` (#FF4B3E) — urgency, live badges
 - `--sky` (#2E9CFF) — links, buyer actions
 
-Fonts: Space Grotesk (display), Manrope (body), IBM Plex Mono (data/manifest/tracking codes), loaded via `next/font/google` in `app/layout.tsx`.
+Fonts use the local system fallback stack in `app/globals.css` so production
+builds do not depend on external font downloads.
 
 ## Extending
 
