@@ -1,16 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import ManifestBoard from "@/components/ManifestBoard";
 import { getVendors, getFeaturedProducts } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
-
-const manifestEntries = [
-  { code: "RTE-01", label: "Aba → Lagos, courier dispatched", tone: "sky" as const },
-  { code: "WVB-14", label: "Onitsha park waybill, 40kg cargo booked", tone: "marigold" as const },
-  { code: "LIVE", label: "22 people viewing a storefront right now", tone: "coral" as const },
-  { code: "PAID", label: "Order confirmed, ₦28,500", tone: "jade" as const },
-];
 
 const steps = [
   {
@@ -70,16 +62,11 @@ export default async function Home() {
 
   return (
     <div>
-      <ManifestBoard entries={manifestEntries} />
-
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
         <div className="grid gap-10 sm:grid-cols-[1.1fr_0.9fr] sm:items-center">
           <div>
-            <span className="inline-block rounded-full border-2 border-ink bg-marigold px-3 py-1 font-mono text-xs font-bold text-ink">
-              BUILT FOR GROWING BUSINESSES
-            </span>
-            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] sm:text-6xl">
+            <h1 className="font-display text-4xl font-bold leading-[1.05] sm:text-6xl">
               Sell your brand.
               <br />
               <span className="text-coral">Grow your audience.</span>
