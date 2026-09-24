@@ -7,6 +7,33 @@ import { createProduct, type ProductActionState } from "@/app/dashboard/(main)/p
 import MediaCapture from "@/components/media/MediaCapture";
 import { removeBackground } from "@imgly/background-removal";
 
+const MAX_BACKGROUND_REMOVAL_DIMENSION = 1600;
+
+async function prepareBackgroundRemovalImage(file: File): Promise<File> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(
+    1,
+    MAX_BACKGROUND_REMOVAL_DIMENSION / Math.max(bitmap.width, bitmap.height),
+  );
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    bitmap.close();
+    throw new Error("Could not prepare image for background removal.");
+  }
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/jpeg", 0.9),
+  );
+  if (!blob) throw new Error("Could not prepare image for background removal.");
+  return new File([blob], "product-source.jpg", { type: "image/jpeg" });
+}
+
 export default function NewProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -14,6 +41,8 @@ export default function NewProductPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [workingFile, setWorkingFile] = useState<File | null>(null);
   const [enhancing, setEnhancing] = useState(false);
+  const [enhanceProgress, setEnhanceProgress] = useState(0);
+  const [enhanceStatus, setEnhanceStatus] = useState("");
   const [enhanceError, setEnhanceError] = useState<string | null>(null);
   const [state, setState] = useState<ProductActionState>({ error: null });
   const [pending, setPending] = useState(false);
@@ -35,20 +64,32 @@ export default function NewProductPage() {
   async function removeProductBackground() {
     if (!workingFile) return;
     setEnhancing(true);
+    setEnhanceProgress(0);
+    setEnhanceStatus("Preparing image…");
     setEnhanceError(null);
     try {
+      const source = await prepareBackgroundRemovalImage(workingFile);
       // Processing happens in the browser. The source image is not sent to a
       // third-party background-removal API.
-      const blob = await removeBackground(workingFile, {
-        model: "isnet",
+      const blob = await removeBackground(source, {
+        model: "isnet_fp16",
         output: { format: "image/png" },
+        progress: (key, current, total) => {
+          const progress = total > 0 ? Math.round((current / total) * 100) : 0;
+          setEnhanceProgress(Math.min(99, progress));
+          if (key.startsWith("fetch:")) setEnhanceStatus("Loading the removal tool…");
+          else if (key.startsWith("compute:")) setEnhanceStatus("Removing the background…");
+        },
       });
       const enhancedFile = new File([blob], "enhanced.png", { type: "image/png" });
       setWorkingFile(enhancedFile);
       setPreviewUrl(URL.createObjectURL(enhancedFile));
+      setEnhanceProgress(100);
+      setEnhanceStatus("Background removed.");
     } catch (error) {
       console.error("Local background removal failed:", error);
       setEnhanceError("Background removal failed. Try a smaller image or try again.");
+      setEnhanceStatus("");
     } finally {
       setEnhancing(false);
     }
@@ -87,11 +128,12 @@ export default function NewProductPage() {
         <MediaCapture mode="image" onCapture={onCameraCapture} />
 
         {previewUrl && (
-          <div className="flex items-center gap-4">
+          <div className="rounded-xl border-2 border-ink bg-white p-3">
+            <div className="flex items-center gap-4">
             <div className="relative h-28 w-28 overflow-hidden rounded-lg border-2 border-ink bg-[repeating-conic-gradient(#eee_0%_25%,transparent_0%_50%)] bg-[length:16px_16px]">
               <Image src={previewUrl} alt="Preview" fill className="object-contain" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <button
                 type="button"
                 onClick={removeProductBackground}
@@ -100,8 +142,30 @@ export default function NewProductPage() {
               >
                 {enhancing ? "Processing on this device…" : "Remove background"}
               </button>
+              {enhancing && (
+                <div className="mt-2" aria-live="polite">
+                  <div className="h-2 overflow-hidden rounded-full bg-sky/15">
+                    <div
+                      className="h-full rounded-full bg-sky transition-all duration-300"
+                      style={{ width: `${enhanceProgress}%` }}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-ink/60">
+                    {enhanceStatus} {enhanceProgress > 0 ? `${enhanceProgress}%` : ""}
+                  </p>
+                </div>
+              )}
+              {!enhancing && enhanceStatus && !enhanceError && (
+                <p className="mt-2 text-xs font-semibold text-jade" aria-live="polite">
+                  {enhanceStatus}
+                </p>
+              )}
               {enhanceError && <p className="mt-2 text-xs text-coral">{enhanceError}</p>}
             </div>
+            </div>
+            <p className="mt-3 text-xs leading-5 text-ink/55">
+              Tip: clear, well-lit photos with the product separated from the background process fastest and cleanest.
+            </p>
           </div>
         )}
 
