@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createProduct, type ProductActionState } from "@/app/dashboard/(main)/products/actions";
 import MediaCapture from "@/components/media/MediaCapture";
+import { removeBackground } from "@imgly/background-removal";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -31,27 +32,23 @@ export default function NewProductPage() {
     setEnhanceError(null);
   }
 
-  async function enhanceWithAI() {
+  async function removeProductBackground() {
     if (!workingFile) return;
     setEnhancing(true);
     setEnhanceError(null);
     try {
-      const body = new FormData();
-      body.append("image", workingFile);
-      const res = await fetch("/api/ai/enhance-product", { method: "POST", body });
-      const data = await res.json();
-      if (!res.ok) {
-        setEnhanceError(data.error || "Enhancement failed.");
-        return;
-      }
-      // data.image is a base64 data URL — convert back to a File so it can
-      // be uploaded to storage the same way as an untouched photo.
-      const blob = await (await fetch(data.image)).blob();
+      // Processing happens in the browser. The source image is not sent to a
+      // third-party background-removal API.
+      const blob = await removeBackground(workingFile, {
+        model: "isnet",
+        output: { format: "image/png" },
+      });
       const enhancedFile = new File([blob], "enhanced.png", { type: "image/png" });
       setWorkingFile(enhancedFile);
       setPreviewUrl(URL.createObjectURL(enhancedFile));
-    } catch {
-      setEnhanceError("Could not reach the enhancement service.");
+    } catch (error) {
+      console.error("Local background removal failed:", error);
+      setEnhanceError("Background removal failed. Try a smaller image or try again.");
     } finally {
       setEnhancing(false);
     }
@@ -97,11 +94,11 @@ export default function NewProductPage() {
             <div>
               <button
                 type="button"
-                onClick={enhanceWithAI}
+                onClick={removeProductBackground}
                 disabled={enhancing}
                 className="rounded-md border-2 border-ink bg-jade px-3 py-2 text-xs font-bold text-paper shadow-[3px_3px_0_0_#14171F] disabled:opacity-60"
               >
-                {enhancing ? "Removing background…" : "✨ Remove background (AI)"}
+                {enhancing ? "Processing on this device…" : "Remove background"}
               </button>
               {enhanceError && <p className="mt-2 text-xs text-coral">{enhanceError}</p>}
             </div>

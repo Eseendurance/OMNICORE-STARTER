@@ -65,7 +65,6 @@ NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
 
 TERMII_API_KEY=<from termii.com>
 TERMII_SENDER_ID=KiVo
-REMOVE_BG_API_KEY=<from remove.bg/api>
 
 NEXT_PUBLIC_AGORA_APP_ID=<from console.agora.io>
 AGORA_APP_CERTIFICATE=<from console.agora.io — keep secret, never NEXT_PUBLIC_>
@@ -94,7 +93,7 @@ would use the platform, so it'll catch any setup mistake:
 1. Visit `/signup`, create an account.
 2. Check your email, click the confirmation link — you should land back on the app already signed in.
 3. You should be redirected to `/dashboard/onboarding`. Fill in a store name and WhatsApp number, submit.
-4. You should land on `/dashboard`. Go to **Products → Add product**, upload a photo, optionally try "Remove background (AI)", fill in the rest, publish.
+4. You should land on `/dashboard`. Go to **Products → Add product**, upload a photo, optionally try "Remove background", fill in the rest, publish.
 5. Visit `/store/your-slug` (in a new tab/incognito) — your product should be live, with a working "Order via WhatsApp" button.
 6. Visit `/explore` — your product should show up in the marketplace search.
 7. Back in the dashboard, **Orders → Log a new order** with a real phone number you can check.

@@ -45,6 +45,15 @@ filters. Product photos support gallery selection or camera capture. Camera
 access requires HTTPS in production (Vercel provides this automatically) and
 the user must grant browser permission.
 
+### Local background removal
+
+Product background removal runs in the browser with
+`@imgly/background-removal`. The image is processed on the user’s device and
+is not uploaded to remove.bg, so `REMOVE_BG_API_KEY` is not required. The first
+use downloads and caches the model assets in the browser; processing speed
+depends on the user’s device and connection. Review the package/model license
+before distributing the feature commercially.
+
 ## Run locally
 
 ```bash
