@@ -52,7 +52,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000 locally. The production deployment is:
+https://platform-gamma-neon.vercel.app
 
 ## Deploy to Vercel
 
@@ -84,7 +85,23 @@ commented with where to get a free/low-cost key:
 - **Live viewer counts** — Supabase Realtime (free tier) instead of raw WebSockets.
 - **Payments** — Paystack (free to integrate, per-transaction fee only).
 
-In Vercel: **Project → Settings → Environment Variables**, add the same keys, redeploy.
+In Vercel: **Project → Settings → Environment Variables**, add the same keys,
+set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_MARKETPLACE_URL` to
+`https://platform-gamma-neon.vercel.app`, then redeploy. Keep provider secret
+keys server-side and never prefix them with `NEXT_PUBLIC_`.
+
+### Production launch checklist
+
+Before inviting customers:
+
+1. Run `supabase/schema.sql` in the production Supabase project.
+2. Add the Supabase URL and anon key to Vercel.
+3. Add Paystack and/or Flutterwave secret keys to Vercel.
+4. Configure the Supabase Site URL and auth callback as
+   `https://platform-gamma-neon.vercel.app/auth/callback`.
+5. Test signup, storefront creation, media upload, payment initialization,
+   order updates, and the follow flow on the production domain.
+6. Confirm webhook/callback verification before enabling paid acquisition.
 
 ## Design system
 

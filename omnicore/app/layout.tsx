@@ -3,10 +3,16 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://platform-gamma-neon.vercel.app";
+
 export const metadata: Metadata = {
-  title: "KiVo — Sell online. Ship anywhere.",
+  metadataBase: new URL(siteUrl),
+  title: "KiVo — Social commerce for growing businesses",
   description:
-    "KiVo is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
+    "KiVo helps brands, creators, and local businesses sell online, build trust, and discover new customers through a social marketplace built for real growth.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({

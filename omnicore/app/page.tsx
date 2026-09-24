@@ -15,15 +15,53 @@ const manifestEntries = [
 const steps = [
   {
     n: "Set up your store",
-    d: "Add products, prices, and photos. KiVo generates your storefront and search listing automatically.",
+    d: "For brands, boutique owners, and creators, KiVo turns product photos, pricing, and storefront content into a compelling online presence in minutes.",
   },
   {
     n: "Get discovered",
-    d: "Every product is indexed into the central Explore marketplace and submitted to Google Shopping — no ad spend required.",
+    d: "Reach buyers through a central marketplace, trend visibility, and search-driven discovery built for business growth, local demand, and repeat sales.",
   },
   {
     n: "Ship it, your way",
-    d: "Quote a courier API in one click, or hand it to the motor park and log the waybill yourself. Buyers get SMS/WhatsApp updates either way.",
+    d: "Manage courier dispatch, waybill tracking, and buyer updates from one dashboard built for businesses that need trust, speed, and operational clarity.",
+  },
+];
+
+const targetAudiences = [
+  "Small business owners",
+  "Fashion, beauty, and retail brands",
+  "Creators and influencers",
+  "Local vendors and resellers",
+  "Service-based and lifestyle businesses",
+];
+
+const marketSignals = [
+  {
+    title: "Brand-first commerce",
+    text: "Businesses want a platform that blends storefronts, discovery, and social proof into one trusted buying journey.",
+  },
+  {
+    title: "Trust-driven conversion",
+    text: "Buyers are more likely to purchase from brands with verified storefronts, customer activity, and clear delivery visibility.",
+  },
+  {
+    title: "Creator-led growth",
+    text: "Creators and micro-brands need a way to monetise communities without managing a fragmented stack of tools.",
+  },
+];
+
+const trustPillars = [
+  {
+    title: "Merchant identity",
+    text: "Verified vendor profiles, follower relationships, and visible business information help buyers know who they are dealing with.",
+  },
+  {
+    title: "Traceable operations",
+    text: "Payment initialization, order events, dispatch updates, and waybill workflows create a clearer record from checkout to delivery.",
+  },
+  {
+    title: "Built to compound",
+    text: "KiVo connects discovery, content, storefronts, and logistics so every customer interaction can strengthen the next sale.",
   },
 ];
 
@@ -39,20 +77,17 @@ export default async function Home() {
         <div className="grid gap-10 sm:grid-cols-[1.1fr_0.9fr] sm:items-center">
           <div>
             <span className="inline-block rounded-full border-2 border-ink bg-marigold px-3 py-1 font-mono text-xs font-bold text-ink">
-              BUILT FOR NIGERIAN VENDORS
+              BUILT FOR GROWING BUSINESSES
             </span>
             <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] sm:text-6xl">
-              Your store.
+              Sell your brand.
               <br />
-              <span className="text-coral">Real buyers.</span>
+              <span className="text-coral">Grow your audience.</span>
               <br />
-              Shipped the way you already ship.
+              Win more customers.
             </h1>
             <p className="mt-5 max-w-md text-lg text-ink/70">
-              KiVo gives you a storefront, a place in the central
-              marketplace, live proof that people are actually watching, and
-              a logistics desk that understands both courier APIs and motor
-              park waybills.
+              KiVo gives founders, creators, and retailers a social-commerce platform to showcase products, attract buyers, build trust, and turn attention into repeat business.
             </p>
             <div id="get-started" className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -85,8 +120,37 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Target audience and market positioning */}
+      <section className="border-y-2 border-ink bg-white py-16">
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-widest text-ink/50">Target audience</p>
+              <h2 className="mt-3 font-display text-3xl font-bold">Built for brands and founders ready to grow online</h2>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {targetAudiences.map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border-2 border-ink bg-sky/10 px-3 py-1.5 text-sm font-semibold text-ink"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border-2 border-ink bg-paper p-5 shadow-[5px_5px_0_0_#14171F]">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-coral">Branding + market research</p>
+              <p className="mt-4 text-sm leading-7 text-ink/75">
+                KiVo is designed for ambitious businesses that want a clear brand story, better customer discovery, and a platform that supports direct sales, trust-building, and live buyer engagement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Vendor strip — real, empty until real vendors sign up */}
-      <section className="border-y-2 border-ink bg-white py-10">
+      <section className="border-b-2 border-ink bg-white py-10">
         <div className="mx-auto max-w-6xl px-5">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/50">
             {vendors.length > 0 ? "Already shipping on KiVo" : "Be the first vendor on KiVo"}
@@ -112,6 +176,55 @@ export default async function Home() {
               ))}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Market signals */}
+      <section className="mx-auto max-w-6xl px-5 py-16">
+        <h2 className="font-display text-3xl font-bold">Where the opportunity is</h2>
+        <div className="mt-8 grid gap-5 sm:grid-cols-3">
+          {marketSignals.map((signal) => (
+            <div
+              key={signal.title}
+              className="rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#14171F]"
+            >
+              <span className="font-mono text-xs font-bold text-sky">MARKET SIGNAL</span>
+              <h3 className="mt-2 font-display text-lg font-bold">{signal.title}</h3>
+              <p className="mt-2 text-sm text-ink/70">{signal.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trust and investor positioning */}
+      <section className="border-y-2 border-ink bg-sky/10 py-16">
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="max-w-2xl">
+            <p className="font-mono text-xs uppercase tracking-widest text-coral">Trust is the product</p>
+            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">
+              A stronger operating layer for modern commerce
+            </h2>
+            <p className="mt-4 text-ink/70">
+              KiVo is positioned to become more than a storefront builder: it is a connected growth layer for businesses that need customer discovery, social proof, payments, and delivery visibility in one place.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+            {trustPillars.map((pillar) => (
+              <div key={pillar.title} className="rounded-xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_#14171F]">
+                <h3 className="font-display text-lg font-bold">{pillar.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink/70">{pillar.text}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border-2 border-ink bg-white p-5">
+            <div>
+              <p className="font-display font-bold">For investors and strategic partners</p>
+              <p className="mt-1 text-sm text-ink/65">Help more businesses formalise, grow, and serve customers with confidence.</p>
+            </div>
+            <Link href="/signup" className="rounded-md border-2 border-ink bg-marigold px-5 py-2.5 font-bold text-ink shadow-[3px_3px_0_0_#14171F] transition hover:-translate-y-0.5">
+              Join the KiVo network
+            </Link>
+          </div>
         </div>
       </section>
 
