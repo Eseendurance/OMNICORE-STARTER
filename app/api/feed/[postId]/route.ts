@@ -1,18 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getPostById } from "@/lib/catalog";
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ postId: string }> },
+  request: NextRequest,
+  { params }: { params: { postId: string } }
 ) {
-  const { postId } = await params;
-  if (!postId) return NextResponse.json({ error: "postId is required." }, { status: 400 });
   try {
-    const post = await getPostById(postId);
-    if (!post) return NextResponse.json({ error: "Feed post not found." }, { status: 404 });
-    return NextResponse.json({ post, comments: post.comments, reactions: post.reactions });
-  } catch (error) {
-    console.error("Feed post request failed:", error);
-    return NextResponse.json({ error: "Unable to load feed post." }, { status: 500 });
+    const { postId } = params;
+
+    const { data: post, error } = await supabase
+      .from('posts')
+      .select(`
+        *,
+        profiles:user_id (id, username, full_name, avatar_url)
+      `)
+      .eq('id', postId)
+      .single();
+
+    if (error || !post) {
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, post });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || 'Failed to fetch post' },
+      { status: 500 }
+    );
   }
 }
