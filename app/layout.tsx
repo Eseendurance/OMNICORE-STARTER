@@ -1,47 +1,40 @@
-import type { Metadata } from "next";
-import { Space_Grotesk, Manrope, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-});
+import { Manrope, Space_Grotesk, IBM_Plex_Mono } from 'next/font/google';
+import './globals.css';
 
 const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  display: 'swap',
+  fallback: ['system-ui', 'sans-serif'],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+  display: 'swap',
+  fallback: ['sans-serif'],
 });
 
-export const metadata: Metadata = {
-  title: "OmniCore AI — Sell online. Ship anywhere.",
-  description:
-    "OmniCore AI is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
-};
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  variable: '--font-ibm-plex-mono',
+  display: 'swap',
+  fallback: ['monospace'],
+});
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
-      className={`${spaceGrotesk.variable} ${manrope.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${spaceGrotesk.variable} ${ibmPlexMono.variable}`}
     >
-      <body className="min-h-full flex flex-col bg-paper text-ink">
-        <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
+      <body className="bg-black text-white antialiased font-sans">
+        {children}
       </body>
     </html>
   );
