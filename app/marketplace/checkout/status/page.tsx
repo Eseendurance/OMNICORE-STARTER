@@ -2,8 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface EscrowDetails {
   id: string;
@@ -19,8 +24,7 @@ interface EscrowDetails {
 
 export default function CheckoutStatusPage() {
   const searchParams = useSearchParams();
-  const router = Router();
-  const supabase = createClientComponentClient();
+  const router = useRouter();
 
   const reference = searchParams.get('ref') || searchParams.get('trxref') || searchParams.get('tx_ref');
 
@@ -37,7 +41,6 @@ export default function CheckoutStatusPage() {
 
     async function verifyEscrowStatus() {
       try {
-        // Query database for updated transaction state (populated by webhook or gateway redirect)
         const { data, error: dbError } = await supabase
           .from('escrow_transactions')
           .select(`
@@ -64,7 +67,7 @@ export default function CheckoutStatusPage() {
     }
 
     verifyEscrowStatus();
-  }, [reference, supabase]);
+  }, [reference]);
 
   if (loading) {
     return (
@@ -99,7 +102,6 @@ export default function CheckoutStatusPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-lg w-full p-8 text-center relative overflow-hidden">
-        {/* Success Icon Header */}
         <div className="w-20 h-20 bg-green-500/10 border border-green-500/30 text-green-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
           ✓
         </div>
@@ -109,7 +111,6 @@ export default function CheckoutStatusPage() {
           Your payment was processed successfully via <span className="capitalize font-semibold text-white">{escrow.gateway}</span> and is securely held in escrow.
         </p>
 
-        {/* Transaction Summary Box */}
         <div className="my-6 bg-gray-800/40 border border-gray-800 rounded-xl p-4 text-left space-y-3">
           <div className="flex justify-between items-center text-sm">
             <span className="text-gray-400">Reference:</span>
@@ -143,7 +144,6 @@ export default function CheckoutStatusPage() {
           </ul>
         </div>
 
-        {/* Next Actions */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/orders"

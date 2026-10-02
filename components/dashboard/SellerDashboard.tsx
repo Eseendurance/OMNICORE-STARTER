@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface EscrowOrder {
   id: string;
@@ -20,18 +25,11 @@ interface EscrowOrder {
   };
 }
 
-interface SellerProfile {
-  wallet_balance_ngn: number;
-}
-
 export default function SellerDashboard({ sellerId }: { sellerId: string }) {
-  const supabase = createClientComponentClient();
-
   const [orders, setOrders] = useState<EscrowOrder[]>([]);
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Bank Transfer Modal State
   const [showPayoutModal, setShowPayoutModal] = useState<boolean>(false);
   const [bankCode, setBankCode] = useState<string>('');
   const [accountNumber, setAccountNumber] = useState<string>('');
@@ -40,11 +38,9 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
   const [isProcessingPayout, setIsProcessingPayout] = useState<boolean>(false);
   const [payoutMessage, setPayoutMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // 1. Fetch Orders and Wallet Balance
   const fetchDashboardData = async () => {
     setLoading(true);
 
-    // Fetch Seller Wallet Balance
     const { data: profile } = await supabase
       .from('profiles')
       .select('wallet_balance_ngn')
@@ -53,7 +49,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
 
     if (profile) setWalletBalance(profile.wallet_balance_ngn || 0);
 
-    // Fetch Incoming Escrow Orders
     const { data: escrowData, error } = await supabase
       .from('escrow_transactions')
       .select(`
@@ -82,7 +77,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
     fetchDashboardData();
   }, [sellerId]);
 
-  // 2. Trigger Bank Withdrawal (Paystack / Flutterwave Transfer)
   const handlePayout = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessingPayout(true);
@@ -118,7 +112,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
         text: `Payout of ₦${amountNum.toLocaleString('en-NG')} initiated successfully!`,
       });
 
-      // Refresh Dashboard Balance
       fetchDashboardData();
       setTimeout(() => setShowPayoutModal(false), 2000);
     } catch (err: any) {
@@ -130,7 +123,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Header & Wallet Metric */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gray-900 border border-gray-800 p-6 rounded-2xl">
         <div>
           <h1 className="text-2xl font-bold text-white">Merchant Dashboard</h1>
@@ -153,7 +145,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
         </div>
       </div>
 
-      {/* Escrow Orders Table */}
       <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
         <div className="p-6 border-b border-gray-800">
           <h2 className="text-lg font-semibold text-white">Incoming Escrow Transactions</h2>
@@ -207,7 +198,6 @@ export default function SellerDashboard({ sellerId }: { sellerId: string }) {
         )}
       </div>
 
-      {/* Bank Payout Modal */}
       {showPayoutModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 relative">

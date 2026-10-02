@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface Product {
   id: string;
@@ -27,18 +32,14 @@ export default function ProductBrowser({
   currentUserId,
   currentUserEmail,
 }: ProductBrowserProps) {
-  const supabase = createClientComponentClient();
-
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Checkout Modal State
   const [gateway, setGateway] = useState<'paystack' | 'flutterwave'>('paystack');
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // 1. Fetch Active Products from Supabase
   useEffect(() => {
     async function loadProducts() {
       setLoading(true);
@@ -60,20 +61,17 @@ export default function ProductBrowser({
     }
 
     loadProducts();
-  }, [supabase]);
+  }, []);
 
-  // 2. Initialize Payment Session (Paystack or Flutterwave)
   const handleInitiateEscrow = async () => {
     if (!selectedProduct) return;
 
     setIsProcessing(true);
     setErrorMessage(null);
 
-    // Generate unique transaction reference code
     const reference = `ESCROW_${Date.now()}_${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
     try {
-      // Create pending Escrow Transaction in Database
       const { error: dbError } = await supabase
         .from('escrow_transactions')
         .insert([
@@ -90,7 +88,6 @@ export default function ProductBrowser({
 
       if (dbError) throw new Error(`Database error: ${dbError.message}`);
 
-      // Call API Route Handler to Initialize Gateway Checkout
       const res = await fetch('/api/payments/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +106,6 @@ export default function ProductBrowser({
         throw new Error(paymentData.error || 'Failed to initialize payment gateway.');
       }
 
-      // Redirect user to Paystack or Flutterwave hosted payment page
       window.location.href = paymentData.authorization_url;
     } catch (err: any) {
       setErrorMessage(err.message || 'An unexpected error occurred.');
@@ -128,7 +124,6 @@ export default function ProductBrowser({
         </div>
       </div>
 
-      {/* Product Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
@@ -183,7 +178,6 @@ export default function ProductBrowser({
         </div>
       )}
 
-      {/* Escrow Checkout Modal */}
       {selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-gray-900 border border-gray-800 rounded-2xl max-w-md w-full p-6 relative">
@@ -202,7 +196,6 @@ export default function ProductBrowser({
               Your payment will be locked safely. The seller won't receive funds until you confirm product receipt.
             </p>
 
-            {/* Order Summary */}
             <div className="my-5 bg-gray-800/50 p-4 rounded-xl border border-gray-800 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Item:</span>
@@ -220,7 +213,6 @@ export default function ProductBrowser({
               </div>
             </div>
 
-            {/* Payment Gateway Selection */}
             <div className="mb-6">
               <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                 Select Payment Method
@@ -257,7 +249,6 @@ export default function ProductBrowser({
               </div>
             )}
 
-            {/* Action Buttons */}
             <div className="flex gap-3">
               <button
                 type="button"
