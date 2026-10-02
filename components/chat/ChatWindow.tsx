@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface Message {
   id: string;
@@ -18,7 +23,6 @@ export default function ChatWindow({
   currentUserId: string;
   recipientId: string;
 }) {
-  const supabase = createClientComponentClient();
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState('');
 
@@ -61,7 +65,7 @@ export default function ChatWindow({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [currentUserId, recipientId, supabase]);
+  }, [currentUserId, recipientId]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
