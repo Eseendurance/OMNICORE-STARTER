@@ -1,48 +1,55 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+
+export const dynamic = 'force-dynamic';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { swiperId, targetId, isLike } = await req.json();
+    const { swiperId, targetId, direction } = await req.json();
 
-    // 1. Record the swipe
-    const { error: swipeErr } = await supabase.from('dating_swipes').upsert(
-      { swiper_id: swiperId, target_id: targetId, is_like: isLike },
-      { onConflict: 'swiper_id,target_id' }
-    );
+    if (!swiperId || !targetId || !direction) {
+      return NextResponse.json(
+        { error: 'Missing required parameters' },
+        { status: 400 }
+      );
+    }
+
+    // 1. Record swipe entry
+    const { error: swipeErr } = await supabase
+      .from('dating_swipes')
+      .insert([{ swiper_id: swiperId, target_id: targetId, direction }]);
 
     if (swipeErr) throw swipeErr;
 
-    // 2. Check for mutual match if liked
-    if (isLike) {
-      const { data: reciprocalSwipe } = await supabase
+    // 2. Check for mutual right swipe (Match)
+    let isMatch = false;
+    if (direction === 'right') {
+      const { data: reciprocal } = await supabase
         .from('dating_swipes')
         .select('*')
         .eq('swiper_id', targetId)
         .eq('target_id', swiperId)
-        .eq('is_like', true)
+        .eq('direction', 'right')
         .single();
 
-      if (reciprocalSwipe) {
-        // Create match entry
+      if (reciprocal) {
+        isMatch = true;
         await supabase.from('dating_matches').insert([
-          { user_1: swiperId, user_2: targetId },
+          { user_1: swiperId, user_2: targetId }
         ]);
-
-        return NextResponse.json({
-          match: true,
-          message: "It's a Match! You can now start chatting.",
-        });
       }
     }
 
-    return NextResponse.json({ match: false });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true, isMatch });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || 'Failed to process swipe' },
+      { status: 500 }
+    );
   }
 }
