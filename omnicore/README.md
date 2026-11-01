@@ -7,12 +7,15 @@ design system ("Manifest Board" — inspired by motor-park departure boards).
 
 ## What's here
 
+Kivo is the updated customer-facing brand for this existing OmniCore repository. The folder, GitHub repository, Supabase project, and Vercel project remain unchanged.
+
 | Route | Layer | What it does |
 |---|---|---|
 | `/` | Layer 1 | SaaS landing page — pitches vendors on signing up |
 | `/store/[vendor]` | Layer 2 | Dynamic storefront per vendor, with live-proof badges, stock bars, countdown |
 | `/explore` | Layer 3 | Central marketplace with live search across all vendors |
 | `/reels` | New | Vertical swipe feed of vendor product videos / live drops |
+| `/community` | New | Product-linked vendor updates, replies, reactions, and vendor spaces |
 | `/api/search` | — | Search endpoint, currently backed by mock data in `lib/data.ts` |
 
 All product/vendor data is mocked in `lib/data.ts` so the app runs and
@@ -21,9 +24,18 @@ when you're ready.
 
 ## Run locally
 
-```bash
-npm install
-npm run dev
+Install dependencies and configure Supabase from `.env.example` first. In PowerShell, use `npm.cmd` if your execution policy blocks `npm.ps1`:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
+```
+
+Run checks before deployment:
+
+```powershell
+npm.cmd run lint
+npm.cmd run build
 ```
 
 Open http://localhost:3000.
@@ -78,3 +90,15 @@ Fonts: Space Grotesk (display), Manrope (body), IBM Plex Mono (data/manifest/tra
 - Swap `lib/data.ts` for a real database (Postgres via Supabase/Neon, or your own API).
 - `app/reels/page.tsx` uses poster images as placeholders — swap in real `<video>` sources or a streaming provider (Mux, Cloudflare Stream) when vendors start uploading.
 - The motor-park waybill flow described in the original blueprint (dispatch → update → buyer notification) isn't built yet — it's a good next feature to add as a vendor-dashboard form plus a Termii/WhatsApp send on submit.
+
+## Community database migration
+
+After `supabase/schema.sql` is installed, ask your DBA to review and run `supabase/social-schema.sql` in the same Supabase project. Community posting, follows, comments, reactions, atomic rate limits, and shipped-order proof depend on this migration. Do not expose the Supabase service-role key in the browser or commit it to the repository.
+
+## Installable app
+
+The production site serves a web manifest, Kivo app icons, a service worker, and an offline fallback page. Installation requires HTTPS (localhost is allowed for development). The offline worker deliberately does not cache API responses, dashboard pages, or private account data.
+
+## Password recovery
+
+The sign-in page links to `/auth/forgot-password`; reset emails return through `/auth/callback` to `/auth/update-password`. Configure `NEXT_PUBLIC_SITE_URL` and allow the deployed callback URL in Supabase Authentication URL settings.

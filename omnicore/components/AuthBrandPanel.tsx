@@ -49,9 +49,9 @@ export default function AuthBrandPanel({
         className="relative z-10 flex items-center gap-2 font-display text-lg font-bold"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-md border-2 border-ink bg-marigold font-mono text-sm font-bold">
-          OC
+          K
         </span>
-        OmniCore
+        Kivo
       </motion.div>
 
       <motion.div

@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Manrope, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { PwaInstallButton, ThemeProvider, ThemeToggle } from "@/components/ThemeAndPwaControls";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -22,10 +23,16 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#1d4ed8",
+};
+
 export const metadata: Metadata = {
-  title: "OmniCore AI — Sell online. Ship anywhere.",
+  title: "Kivo — Sell online. Ship anywhere.",
   description:
-    "OmniCore AI is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
+    "Kivo is the storefront, marketplace, and logistics engine for vendors in Nigeria — courier delivery, motor-park waybills, and live buyer proof, all in one dashboard.",
 };
 
 export default function RootLayout({
@@ -37,11 +44,18 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${spaceGrotesk.variable} ${manrope.variable} ${plexMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
-        <Navbar />
-        <main className="flex-1 flex flex-col">{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Navbar />
+          <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 rounded-full border border-blue-100 bg-white/95 p-1.5 shadow-md backdrop-blur dark-control">
+            <ThemeToggle />
+            <PwaInstallButton />
+          </div>
+          <main className="flex-1 flex flex-col">{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

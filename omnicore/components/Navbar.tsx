@@ -16,9 +16,9 @@ export default async function Navbar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
         <Link href="/" className="flex items-center gap-2 font-display text-xl font-bold">
           <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink font-mono text-sm font-semibold text-marigold">
-            OC
+            K
           </span>
-          <span className="font-display font-bold">OmniCore</span>
+          <span className="font-display font-bold">Kivo</span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
           {links.map((l) => (
@@ -55,6 +55,13 @@ export default async function Navbar() {
           </Link>
         </div>
       </div>
+      <nav aria-label="Mobile navigation" className="flex gap-5 overflow-x-auto border-t border-blue-100 px-5 py-3 md:hidden">
+        {links.map((link) => (
+          <Link key={link.href} href={link.href} className="shrink-0 text-sm font-semibold text-ink/80 hover:text-blue-700">
+            {link.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }

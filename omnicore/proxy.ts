@@ -36,7 +36,7 @@ export async function proxy(request: NextRequest) {
   // Protect the vendor dashboard.
   if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
     const redirectUrl = new URL("/login", request.url);
-    redirectUrl.searchParams.set("next", request.nextUrl.pathname);
+    redirectUrl.searchParams.set("next", `${request.nextUrl.pathname}${request.nextUrl.search}`);
     return NextResponse.redirect(redirectUrl);
   }
 

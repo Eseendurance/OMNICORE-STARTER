@@ -64,7 +64,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<from Supabase Project Settings → API>
 NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
 
 TERMII_API_KEY=<from termii.com>
-TERMII_SENDER_ID=OmniCore
+TERMII_SENDER_ID=Kivo
 REMOVE_BG_API_KEY=<from remove.bg/api>
 
 NEXT_PUBLIC_AGORA_APP_ID=<from console.agora.io>
@@ -124,3 +124,7 @@ Being precise about this so nothing here is a silent stub:
   scheme (`live-{vendorId}`) supports one concurrent live stream per
   vendor, which matches "vendor goes live to their buyers" — it's not
   built for one vendor running two broadcasts at once.
+
+## Kivo install and password recovery
+
+The app exposes a PWA manifest, icons, offline fallback, and an install button. Install requires HTTPS (except localhost); private API and dashboard routes are never cached by the service worker. Password reset uses `/auth/forgot-password` and `/auth/update-password`; make sure the Supabase Auth URL allowlist includes the deployed `/auth/callback` URL and `NEXT_PUBLIC_SITE_URL` is set correctly.

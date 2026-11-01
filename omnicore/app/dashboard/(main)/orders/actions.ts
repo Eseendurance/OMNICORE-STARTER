@@ -120,33 +120,25 @@ export async function dispatchOrder(
 
   if (updateError) return { error: updateError.message };
 
-  // Auto-create a 'shipped' social post so buyers and followers see real dispatch proof.
-  try {
-    const routeLabel = `${departureTerminal} → ${transportCompany} #${waybillCode}`;
-    const postBody = `Your parcel left ${departureTerminal} with ${transportCompany}. Driver: ${driverName} (${driverPhone}). Waybill ${waybillCode}`;
-    await supabase.from('social_posts').insert({
-      vendor_id: vendor.id,
-      order_id: order.id,
-      kind: 'shipped',
-      body: postBody,
-      route_label: routeLabel,
-      depth_score: 1,
-    });
-  } catch (err) {
-    // Non-fatal: log and continue
-    console.error('Could not create shipped post:', err);
-  }
+  // The database function verifies ownership and creates one privacy-safe proof post per order.
+  const { error: socialPostError } = await supabase.rpc("create_shipped_social_post", {
+    order_id_input: order.id,
+  });
 
   revalidatePath(`/dashboard/orders/${orderId}`);
   revalidatePath("/dashboard/orders");
+  revalidatePath("/community");
 
-  if (!smsOk) {
-    return {
-      error: null,
-      success: true,
-      warning: `Order marked shipped, but the SMS didn't send: ${smsErrorDetail}`,
-    };
+  const warnings: string[] = [];
+  if (!smsOk) warnings.push(`The customer SMS didn't send: ${smsErrorDetail}`);
+  if (socialPostError) {
+    console.error("Could not create shipped proof post:", socialPostError);
+    warnings.push("The order shipped, but its community dispatch update could not be published.");
   }
 
-  return { error: null, success: true };
+  return {
+    error: null,
+    success: true,
+    ...(warnings.length ? { warning: warnings.join(" ") } : {}),
+  };
 }

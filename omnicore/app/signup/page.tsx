@@ -5,7 +5,7 @@ export default function SignupPage() {
   return (
     <div className="flex flex-1 flex-col sm:flex-row">
       <AuthBrandPanel
-        eyebrow="JOIN OMNICORE"
+        eyebrow="JOIN KIVO"
         heading="Real buyers. Real dispatch. Zero ad spend."
         tone="coral"
       />

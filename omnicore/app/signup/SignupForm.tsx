@@ -84,11 +84,11 @@ export default function SignupForm() {
                 <input
                   type="password"
                   name="password"
-                  minLength={6}
+                  minLength={8}
                   required
                   className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm transition focus:outline-none focus:ring-4 focus:ring-marigold/40"
                 />
-                <span className="text-xs text-ink/40">At least 6 characters.</span>
+                <span className="text-xs text-ink/40">At least 8 characters.</span>
               </motion.label>
 
               {state.error && (

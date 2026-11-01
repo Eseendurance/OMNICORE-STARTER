@@ -25,6 +25,9 @@ export default function LoginForm() {
       <p className="mt-2 text-sm text-ink/60">
         Manage your storefront, orders, and dispatches.
       </p>
+      <Link href="/auth/forgot-password" className="mt-3 self-start text-sm font-semibold text-sky hover:underline">
+        Forgot password?
+      </Link>
 
       <motion.form
         action={formAction}
@@ -54,6 +57,7 @@ export default function LoginForm() {
           <input
             type="email"
             name="email"
+            autoComplete="email"
             required
             className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm transition focus:outline-none focus:ring-4 focus:ring-marigold/40"
           />
@@ -66,6 +70,7 @@ export default function LoginForm() {
           <input
             type="password"
             name="password"
+            autoComplete="current-password"
             required
             className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm transition focus:outline-none focus:ring-4 focus:ring-marigold/40"
           />

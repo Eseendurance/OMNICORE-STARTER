@@ -181,11 +181,13 @@ export type Database = {
         Row: {
           post_id: string;
           user_id: string;
+          type: "USEFUL" | "LIKE";
           created_at: string;
         };
         Insert: {
           post_id: string;
           user_id: string;
+          type?: "USEFUL" | "LIKE";
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["social_reactions"]["Insert"]>;

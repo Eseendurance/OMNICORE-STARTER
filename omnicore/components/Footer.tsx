@@ -8,9 +8,9 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 font-display text-lg font-bold">
               <span className="flex h-7 w-7 items-center justify-center rounded-md bg-marigold font-mono text-xs font-bold text-ink">
-                OC
+                K
               </span>
-              OmniCore
+              Kivo
             </div>
             <p className="mt-3 max-w-xs text-sm text-paper/70">
               The storefront, marketplace, and logistics engine built for
@@ -38,7 +38,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-paper/20 pt-6 text-xs text-paper/50">
-          © {new Date().getFullYear()} OmniCore AI. Built for vendors, not ad
+          © {new Date().getFullYear()} Kivo. Built for vendors, not ad
           networks.
         </div>
       </div>

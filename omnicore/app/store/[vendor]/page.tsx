@@ -4,6 +4,7 @@ import { getVendorBySlug, getProductsForVendor } from "@/lib/catalog";
 import type { CatalogProduct } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
 import Countdown from "@/components/Countdown";
+import FollowVendorButton from "@/components/social/FollowVendorButton";
 
 // Vendors are created dynamically at runtime (real signups), so this route
 // can't be statically generated at build time — it renders on demand.
@@ -36,7 +37,7 @@ export default async function StorePage({
       <div className={`${toneBg[vendor.color]} border-b-2 border-ink`}>
         <div className="mx-auto max-w-6xl px-5 py-10">
           <p className="font-mono text-xs uppercase tracking-widest text-ink/70">
-            {vendor.location ?? "Nigeria"} · {vendor.followers.toLocaleString()} followers
+            {vendor.location ?? "Nigeria"}
           </p>
           <h1 className="mt-2 font-display text-4xl font-bold">{vendor.name}</h1>
           {vendor.tagline && <p className="mt-1 text-ink/80">{vendor.tagline}</p>}
@@ -45,6 +46,7 @@ export default async function StorePage({
               ★ {vendor.rating.toFixed(1)} rating
             </span>
             {items.length > 0 && <Countdown />}
+            <FollowVendorButton vendorId={vendor.id} />
           </div>
         </div>
       </div>

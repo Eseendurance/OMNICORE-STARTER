@@ -6,7 +6,7 @@ import ReelCard from "@/components/ReelCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Reels — OmniCore AI",
+  title: "Reels — Kivo",
 };
 
 export default async function ReelsPage() {
