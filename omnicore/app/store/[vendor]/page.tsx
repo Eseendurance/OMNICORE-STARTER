@@ -5,6 +5,8 @@ import type { CatalogProduct } from "@/lib/catalog";
 import ProductCard from "@/components/ProductCard";
 import Countdown from "@/components/Countdown";
 import FollowVendorButton from "@/components/social/FollowVendorButton";
+import StoreReviews from "@/components/StoreReviews";
+import CreatorSupportActions from "@/components/CreatorSupportActions";
 
 // Vendors are created dynamically at runtime (real signups), so this route
 // can't be statically generated at build time — it renders on demand.
@@ -79,6 +81,8 @@ export default async function StorePage({
             choose at checkout, and get SMS/WhatsApp updates either way.
           </p>
         </div>
+        <StoreReviews vendorId={vendor.id} />
+        <CreatorSupportActions vendorId={vendor.id} vendorName={vendor.name} />
       </div>
     </div>
   );

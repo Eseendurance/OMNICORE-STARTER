@@ -54,8 +54,24 @@ export async function POST(req: NextRequest) {
     if (!space) return NextResponse.json({ error: "Space not found." }, { status: 404 });
 
     const isOwner = user?.id === space.owner_id;
+    let hasMembership = false;
+    if (user && !isOwner && space.privacy !== "public") {
+      const { data: membership, error: membershipError } = await supabase
+        .from("creator_memberships")
+        .select("id")
+        .eq("supporter_id", user.id)
+        .eq("vendor_id", space.owner_id)
+        .gt("expires_at", new Date().toISOString())
+        .limit(1)
+        .maybeSingle();
+      if (membershipError) {
+        console.error("Could not verify live space membership:", membershipError);
+        return NextResponse.json({ error: "Could not verify your membership." }, { status: 500 });
+      }
+      hasMembership = Boolean(membership);
+    }
     if (role === "host" && !isOwner) return unauthorized();
-    if (role === "audience" && (!space.is_live || (space.privacy !== "public" && !isOwner))) {
+    if (role === "audience" && (!space.is_live || (space.privacy !== "public" && !isOwner && !hasMembership))) {
       return unauthorized();
     }
     authorizedChannel = `space-${space.id}`;

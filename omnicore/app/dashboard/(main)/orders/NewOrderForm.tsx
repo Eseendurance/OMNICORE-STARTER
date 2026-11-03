@@ -13,7 +13,7 @@ export default function NewOrderForm({
   const [state, formAction, pending] = useActionState(createOrder, initialState);
 
   return (
-    <form action={formAction} className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <form action={formAction} className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
       <input
         name="customerName"
         required
@@ -24,6 +24,12 @@ export default function NewOrderForm({
         name="customerPhone"
         required
         placeholder="+2348012345678"
+        className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-marigold/40"
+      />
+      <input
+        name="customerEmail"
+        type="email"
+        placeholder="Buyer Kivo sign-in email (optional)"
         className="rounded-md border-2 border-ink bg-white px-3 py-2 text-sm focus:outline-none focus:ring-4 focus:ring-marigold/40"
       />
       <select
@@ -53,7 +59,7 @@ export default function NewOrderForm({
         {pending ? "Logging…" : "Log order"}
       </button>
       {state.error && (
-        <p className="sm:col-span-2 lg:col-span-5 rounded-md border-2 border-coral bg-coral-tint px-3 py-2 text-sm text-coral">
+        <p className="sm:col-span-2 lg:col-span-6 rounded-md border-2 border-coral bg-coral-tint px-3 py-2 text-sm text-coral">
           {state.error}
         </p>
       )}

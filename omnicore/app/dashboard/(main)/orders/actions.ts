@@ -17,10 +17,12 @@ export async function createOrder(
 
   const customerName = String(formData.get("customerName") || "").trim();
   const customerPhone = String(formData.get("customerPhone") || "").trim();
+  const customerEmail = String(formData.get("customerEmail") || "").trim().toLowerCase();
   const amount = Number(formData.get("amount"));
   const productId = String(formData.get("productId") || "") || null;
 
-  if (!customerName || !customerPhone || !Number.isFinite(amount) || amount < 0) {
+  if (!customerName || !customerPhone || !Number.isFinite(amount) || amount < 0 ||
+      (customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail))) {
     return { error: "Customer name, phone, and a valid amount are required." };
   }
 
@@ -30,6 +32,7 @@ export async function createOrder(
     product_id: productId,
     customer_name: customerName,
     customer_phone: customerPhone,
+    customer_email: customerEmail || null,
     amount: Math.round(amount),
     status: "confirmed",
   });

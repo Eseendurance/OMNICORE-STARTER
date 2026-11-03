@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileCard from "@/components/ProfileCard";
+import ReportContentButton from "@/components/ReportContentButton";
 
 export const dynamic = "force-dynamic";
 
@@ -45,12 +46,13 @@ export default async function CommunityPostPage({
         {vendor && <ProfileCard vendor={vendor} compact />}
         <p className="mt-5 whitespace-pre-wrap text-sm leading-7 text-blue-900">{post.body}</p>
         {post.kind === "shipped" && post.route_label && <p className="mt-4 rounded-xl bg-blue-50 p-3 text-sm font-semibold text-blue-900">Dispatch: {post.route_label}</p>}
+        <div className="mt-4"><ReportContentButton postId={post.id} /></div>
         {product && <Link href={`/store/${vendor?.slug ?? ""}`} className="mt-4 block rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm font-semibold text-blue-900 hover:border-blue-300">{product.title} | Naira {Number(product.price).toLocaleString()}</Link>}
         <p className="mt-5 text-xs text-blue-700">Shared {new Date(post.created_at).toLocaleString()}</p>
       </article>
       <section className="mt-5 rounded-2xl border border-blue-100 bg-white p-5">
         <h2 className="font-display text-lg font-bold text-blue-950">Questions and replies</h2>
-        {!comments?.length ? <p className="mt-3 text-sm text-blue-700">No replies yet.</p> : <ul className="mt-3 space-y-3">{comments.map((comment) => <li key={comment.id} className="rounded-xl bg-blue-50 p-3"><p className="whitespace-pre-wrap text-sm text-blue-900">{comment.body}</p><time className="mt-2 block text-xs text-blue-700">{new Date(comment.created_at).toLocaleString()}</time></li>)}</ul>}
+        {!comments?.length ? <p className="mt-3 text-sm text-blue-700">No replies yet.</p> : <ul className="mt-3 space-y-3">{comments.map((comment) => <li key={comment.id} className="rounded-xl bg-blue-50 p-3"><p className="whitespace-pre-wrap text-sm text-blue-900">{comment.body}</p><time className="mt-2 block text-xs text-blue-700">{new Date(comment.created_at).toLocaleString()}</time><div className="mt-2"><ReportContentButton commentId={comment.id} /></div></li>)}</ul>}
         <Link href="/community" className="mt-4 inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-bold text-white hover:bg-blue-800">Reply in Community</Link>
       </section>
     </main>

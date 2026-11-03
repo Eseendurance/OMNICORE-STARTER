@@ -11,6 +11,7 @@ import {
   LogOut,
   Clapperboard,
   Radio,
+  Users,
 } from "lucide-react";
 import { signOut } from "@/app/auth-actions";
 
@@ -27,6 +28,7 @@ const links = [
   { href: "/dashboard/orders", label: "Orders", icon: ClipboardList },
   { href: "/dashboard/reels", label: "Reels", icon: Clapperboard },
   { href: "/dashboard/live", label: "Go live", icon: Radio },
+  { href: "/dashboard/spaces", label: "Spaces", icon: Users },
 ];
 
 export default function DashboardSidebar({

@@ -16,6 +16,9 @@ Kivo is the updated customer-facing brand for this existing OmniCore repository.
 | `/explore` | Layer 3 | Central marketplace with live search across all vendors |
 | `/reels` | New | Vertical swipe feed of vendor product videos / live drops |
 | `/community` | New | Product-linked vendor updates, replies, reactions, and vendor spaces |
+| `/messages` | New | Buyer/vendor conversations scoped to claimed orders, with delivery confirmation and verified reviews |
+| `/moderation` | New | Report queue for trusted moderators and admins |
+| `/dashboard/spaces` | New | Create public and membership-only trade spaces |
 | `/api/search` | — | Search endpoint, currently backed by mock data in `lib/data.ts` |
 
 All product/vendor data is mocked in `lib/data.ts` so the app runs and
@@ -42,21 +45,24 @@ Open http://localhost:3000.
 
 ## Deploy to Vercel
 
-**Option A — CLI**
-```bash
-npm install -g vercel
-vercel        # first deploy, follow prompts
-vercel --prod # promote to production
+The Next.js app and its `package.json` are in the repository's `omnicore`
+subfolder. For the existing Vercel project, open **Settings → General →
+Root Directory**, set it to `omnicore`, save, and redeploy. Do not create a
+new project or move the app. A `NEXT_NO_VERSION` error means Vercel is
+looking above the folder that contains `package.json`.
+
+Run local commands from `omnicore`:
+
+```powershell
+cd omnicore
+npm.cmd ci
+npm.cmd run lint
+npm.cmd run build
 ```
 
-**Option B — GitHub**
-1. Push this folder to a new GitHub repo.
-2. Go to https://vercel.com/new, import the repo.
-3. Vercel auto-detects Next.js (see `vercel.json`) — no config needed to deploy the starter as-is.
-4. Click Deploy.
-
-Both options work with zero environment variables — the starter uses mock
-data. Add the keys below when you're ready to go live.
+In the existing Vercel project, set the Root Directory to `omnicore`, keep
+the framework as Next.js, and configure the required environment variables
+below for the environments you use.
 
 ## Wiring in real integrations
 
@@ -69,31 +75,55 @@ commented with where to get a free/low-cost key:
 - **Courier rates/labels** — Terminal Africa (free sandbox endpoint) or Sendstack.
 - **Live viewer counts** — Supabase Realtime (free tier) instead of raw WebSockets.
 - **Payments** — Paystack (free to integrate, per-transaction fee only).
+- **Paystack support** — server-side transaction initialization and a signed
+  webhook at `/api/payments/paystack/webhook`. The webhook verifies each
+  transaction with Paystack before recording a tip or 30/90-day membership.
+  An active membership grants access to that vendor's invite-only spaces.
+  Add `PAYSTACK_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and
+  `NEXT_PUBLIC_SITE_URL`. Never expose the service-role key.
+- **Order messages/reviews** — vendors should enter the buyer's confirmed
+  Kivo sign-in email when logging an order. Buyers can link matching orders
+  at `/messages`, confirm delivery in the private thread, and then leave one
+  verified review. Existing orders without a buyer email cannot be claimed.
+- **Moderation** — reports are available on posts/comments. Set a trusted
+  user's `app_metadata.role` to `moderator` or `admin` using Supabase's
+  privileged Auth Admin API; never use editable `user_metadata` for roles.
+  The moderator page is `/moderation`. After changing app metadata, the
+  moderator must sign in again to refresh their JWT.
 
-In Vercel: **Project → Settings → Environment Variables**, add the same keys, redeploy.
+  For a DBA-managed account, a privileged SQL operator can set the role by
+  user UUID:
+
+  ```sql
+  update auth.users
+  set raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb)
+    || '{"role":"moderator"}'::jsonb
+  where id = '<trusted-user-uuid>';
+  ```
+
+In Vercel: **Project → Settings → Environment Variables**, add the same keys
+to the existing project, then redeploy.
 
 ## Design system
 
-Tokens live in `app/globals.css` under `:root` / `@theme inline`:
-
-- `--paper` (#FFFCF5) — background, always bright, never dark
-- `--ink` (#14171F) — text and borders
-- `--marigold` (#FFB100) — primary CTA
-- `--jade` (#00875A) — confirmed/money states
-- `--coral` (#FF4B3E) — urgency, live badges
-- `--sky` (#2E9CFF) — links, buyer actions
-
-Fonts: Space Grotesk (display), Manrope (body), IBM Plex Mono (data/manifest/tracking codes), loaded via `next/font/google` in `app/layout.tsx`.
+Tokens live in `app/globals.css` under `:root` / `@theme inline`.
+Production app surfaces use white and blue, with the persisted optional
+theme control. Fonts use local system stacks; builds do not download Google
+Fonts or depend on external font access.
 
 ## Extending
 
-- Swap `lib/data.ts` for a real database (Postgres via Supabase/Neon, or your own API).
 - `app/reels/page.tsx` uses poster images as placeholders — swap in real `<video>` sources or a streaming provider (Mux, Cloudflare Stream) when vendors start uploading.
-- The motor-park waybill flow described in the original blueprint (dispatch → update → buyer notification) isn't built yet — it's a good next feature to add as a vendor-dashboard form plus a Termii/WhatsApp send on submit.
+- Orders, dispatch/waybill notifications, community interactions, and order conversations use the existing Supabase project. New database objects remain DBA-applied; the app never runs the schema script at startup.
 
 ## Community database migration
 
-After `supabase/schema.sql` is installed, ask your DBA to review and run `supabase/social-schema.sql` in the same Supabase project. Community posting, follows, comments, reactions, atomic rate limits, and shipped-order proof depend on this migration. Do not expose the Supabase service-role key in the browser or commit it to the repository.
+After `supabase/schema.sql` is installed, ask your DBA to review and run
+`supabase/social-schema.sql` in the same Supabase project. This migration
+adds community interactions, order-linked messaging, verified reviews,
+moderation, and Paystack support records. Community feeds, order claims,
+reviews, moderation, and payment callbacks need the DBA-applied schema.
+The app does not run the migration automatically.
 
 ## Installable app
 

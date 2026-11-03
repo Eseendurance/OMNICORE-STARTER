@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getCurrentVendor } from "@/lib/vendor";
+import { createClient } from "@/lib/supabase/server";
 
 const links = [
   { href: "/explore", label: "Explore" },
@@ -9,7 +10,8 @@ const links = [
 ];
 
 export default async function Navbar() {
-  const vendor = await getCurrentVendor();
+  const [vendor, supabase] = await Promise.all([getCurrentVendor(), createClient()]);
+  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-paper">
@@ -30,6 +32,7 @@ export default async function Navbar() {
               {l.label}
             </Link>
           ))}
+          {user && <Link href="/messages" className="font-body text-sm font-semibold text-ink/80 transition hover:text-ink">Order messages</Link>}
         </nav>
         <div className="flex items-center gap-3">
           {vendor ? (
@@ -61,6 +64,7 @@ export default async function Navbar() {
             {link.label}
           </Link>
         ))}
+        {user && <Link href="/messages" className="shrink-0 text-sm font-semibold text-ink/80 hover:text-blue-700">Order messages</Link>}
       </nav>
     </header>
   );

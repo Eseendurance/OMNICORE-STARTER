@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Heart, MessageCircle, PackageCheck, Send, Truck, X } from "lucide-react";
 import Link from "next/link";
 import ProfileCard from "@/components/ProfileCard";
+import ReportContentButton from "@/components/ReportContentButton";
 
 type FeedItem = {
   id: string;
@@ -229,6 +230,7 @@ export default function Feed({
                 <button onClick={() => react(item.id)} aria-pressed={reactedPostIds.includes(item.id)} className="flex items-center gap-1 transition hover:text-blue-700"><Heart size={15} fill={reactedPostIds.includes(item.id) ? "currentColor" : "none"} /> {reactedPostIds.includes(item.id) ? "Useful" : "Mark useful"}</button>
                 <button onClick={() => openDiscussion(item.id)} className="flex items-center gap-1 text-blue-900 hover:text-blue-700"><MessageCircle size={15} /> Discuss</button>
                 <Link href={`/community/post/${item.id}`} className="text-blue-700 hover:underline">Open</Link>
+                <ReportContentButton postId={item.id} />
                 <span className="ml-auto">Signal {item.depth_score}</span>
               </div>
             </article>
@@ -261,7 +263,10 @@ export default function Feed({
                     {postDetails.comments.length === 0 ? <p className="mt-2 text-sm text-blue-700">No comments yet — be the first to ask about this dispatch or product.</p> : (
                       <ul className="mt-2 space-y-2">
                         {postDetails.comments.map((c) => (
-                          <li key={c.id} className="rounded-md border p-3">{c.body}</li>
+                          <li key={c.id} className="rounded-md border border-blue-100 p-3">
+                            <p className="text-sm text-blue-950">{c.body}</p>
+                            <div className="mt-2"><ReportContentButton commentId={c.id} /></div>
+                          </li>
                         ))}
                       </ul>
                     )}
