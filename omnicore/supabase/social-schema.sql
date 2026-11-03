@@ -294,8 +294,52 @@ begin
     greatest(1, ceil(extract(epoch from (bucket_start + make_interval(secs => window_seconds) - now())))::integer);
 end;
 $$;
-revoke all on function consume_social_rate_limit(text, integer, integer) from public;
-grant execute on function consume_social_rate_limit(text, integer, integer) to authenticated;
+revoke all on function consume_social_rate_limit(text, integer, integer) from public, anon, authenticated;
+
+-- Enforce limits for direct Supabase writes too, not only app API requests.
+create or replace function enforce_social_write_rate_limit()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  action_name text;
+  limit_count integer;
+  window_size integer;
+  request_allowed boolean;
+begin
+  if tg_table_name = 'social_posts' then
+    action_name := 'post';
+    limit_count := 3;
+    window_size := 60;
+  elsif tg_table_name = 'social_comments' then
+    action_name := 'comment';
+    limit_count := 5;
+    window_size := 60;
+  else
+    raise exception 'Unsupported social rate-limit target';
+  end if;
+
+  select result.allowed into request_allowed
+  from consume_social_rate_limit(action_name, limit_count, window_size) as result;
+
+  if not coalesce(request_allowed, false) then
+    raise exception using errcode = 'P0001', message = 'Rate limit exceeded';
+  end if;
+  return new;
+end;
+$$;
+revoke all on function enforce_social_write_rate_limit() from public, anon, authenticated;
+
+drop trigger if exists social_posts_enforce_rate_limit on social_posts;
+create trigger social_posts_enforce_rate_limit
+before insert on social_posts
+for each row execute function enforce_social_write_rate_limit();
+drop trigger if exists social_comments_enforce_rate_limit on social_comments;
+create trigger social_comments_enforce_rate_limit
+before insert on social_comments
+for each row execute function enforce_social_write_rate_limit();
 
 -- A shipped-proof post is created only after the owning vendor's order is shipped.
 create or replace function create_shipped_social_post(order_id_input uuid)

@@ -17,6 +17,9 @@
   --jade-tint: #eff6ff;
   --coral-tint: #dbeafe;
   --sky-tint: #eff6ff;
+  --font-space-grotesk: "Aptos Display", "Segoe UI", Arial, sans-serif;
+  --font-manrope: "Aptos", "Segoe UI", Arial, sans-serif;
+  --font-plex-mono: "Cascadia Mono", Consolas, monospace;
 }
 
 @theme inline {

@@ -79,22 +79,6 @@ export async function POST(request: NextRequest) {
   }
   if (!product) return NextResponse.json({ error: "Choose a product from your own store." }, { status: 400 });
 
-  const { data: limitRows, error: limitError } = await supabase.rpc("consume_social_rate_limit", {
-    action_name: "post",
-    maximum_requests: 3,
-    window_seconds: 60,
-  });
-  if (limitError) {
-    console.error("Post rate limit failed:", limitError);
-    return NextResponse.json({ error: "Posting is temporarily unavailable." }, { status: 503 });
-  }
-  if (!limitRows?.[0]?.allowed) {
-    return NextResponse.json(
-      { error: "You are posting too quickly. Slow down a bit.", retryAfter: limitRows?.[0]?.retry_after_seconds ?? 60 },
-      { status: 429 }
-    );
-  }
-
   const { data, error } = await supabase.from("social_posts").insert({
     vendor_id: vendor.id,
     product_id: product.id,
@@ -107,6 +91,12 @@ export async function POST(request: NextRequest) {
   `).single();
 
   if (error) {
+    if (error.message.includes("Rate limit exceeded")) {
+      return NextResponse.json(
+        { error: "You are posting too quickly. Wait a minute, then try again." },
+        { status: 429 }
+      );
+    }
     console.error("Feed post failed:", error);
     return NextResponse.json({ error: "Could not publish that update." }, { status: 500 });
   }

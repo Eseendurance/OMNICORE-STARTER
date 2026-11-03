@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileCard from "@/components/ProfileCard";
+import SpaceLiveRoom from "@/components/SpaceLiveRoom";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function CommunitySpacePage({
   const supabase = await createClient();
   const { data: space, error } = await supabase
     .from("vendor_spaces")
-    .select("id, owner_id, name, description, category, privacy, is_live")
+    .select("id, owner_id, name, description, category, privacy, is_live, live_channel")
     .eq("id", id)
     .maybeSingle();
   if (error) {
@@ -22,6 +23,9 @@ export default async function CommunitySpacePage({
     throw new Error("Could not load this vendor space.");
   }
   if (!space) notFound();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const isOwner = user?.id === space.owner_id;
 
   const { data: owner, error: ownerError } = await supabase
     .from("vendors")
@@ -41,9 +45,8 @@ export default async function CommunitySpacePage({
         <h1 className="mt-2 font-display text-3xl font-bold text-blue-950">{space.name}</h1>
         <p className="mt-3 text-sm leading-6 text-blue-800">{space.description || "A place for vendors and buyers to talk about this trade."}</p>
         {owner && <div className="mt-5"><ProfileCard vendor={owner} /></div>}
-        <div className="mt-6 rounded-xl bg-blue-50 p-4 text-sm text-blue-900">
-          {space.is_live ? "This vendor has marked the lounge live. Audio/video joining is not available in this version." : "This is a public vendor space. Posts remain attached to products, dispatches, or storefronts."}
-        </div>
+        <p className="mt-4 text-sm text-blue-800">A focused space for this vendor community. Keep conversations tied to products, dispatches, or storefronts.</p>
+        <SpaceLiveRoom spaceId={space.id} isLive={space.is_live} isOwner={isOwner} />
         <Link href="/community" className="mt-5 inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-bold text-white hover:bg-blue-800">Browse community updates</Link>
       </section>
     </main>
